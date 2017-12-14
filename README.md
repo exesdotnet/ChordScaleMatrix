@@ -33,6 +33,7 @@ Requirements
 
 Using the zipped release file
 
+* In case you have not already install [SuperCollider](http://supercollider.sourceforge.net/downloads/) and SuperCollider plugins.
 * Download latest release [ChordScaleMatrix](https://github.com/exesdotnet/ChordScaleMatrix/releases) 0.90 beta or later!
 Alternative the [zipped Git repository](https://github.com/exesdotnet/ChordScaleMatrix/archive/master.zip)
 * Download the [ChordSymbol](https://github.com/triss/ChordSymbol/archive/master.zip) extension!
