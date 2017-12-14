@@ -12,6 +12,7 @@ Usecases
 * Learning software for understanding the music theory of chords, chord progressions, scales and tuning
 * Therapeutic effect by playing and learning
 * A funny toy for just having fun and to promote creativity
+* Performing live ambient music
 * Audio and music analysis
 * etc.
 
