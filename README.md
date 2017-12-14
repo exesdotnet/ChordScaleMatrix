@@ -106,7 +106,7 @@ TO DO
 -----
 
 * Mode
-    * Synchronize ocataves in `Single note mode` and `Chord mode`
+    * Synchronize octaves in `Single note mode` and `Chord mode`
     
 * Synthesizers
     * Debug and optimize the synths
