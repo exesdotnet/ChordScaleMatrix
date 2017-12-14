@@ -68,7 +68,7 @@ Running
 Once SupperCollider is loaded you can open `ChordScaleMatrix/install_ChordScaleMatrix.scd` 
 in case not all requirements are installed.
 
-Open `ChordScaleMatrix/ChordScaleMatrix.scd` and click betweenn the parenthesis 
+Open `ChordScaleMatrix/ChordScaleMatrix.scd` and click between the parenthesis 
 and press `Strg + Return` to run the SuperCollider document!
 
 **Automatically**
