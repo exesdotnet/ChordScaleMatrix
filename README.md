@@ -48,13 +48,13 @@ Using the zipped release file
 
 [Same procedure like in Windows](https://github.com/exesdotnet/ChordScaleMatrix/blob/master/README.md#windows)
 
-Install via script by typing
+Install via script by typing!
 
     # Installation script
     cd ChordScaleMatrix
     ./install-csm.sh
     
-Install via script using Git
+Install via script using Git!
 
     # Installation using Git
     cd ChordScaleMatrix
@@ -73,7 +73,7 @@ and press `Strg + Return` to run the SuperCollider document!
 
 **Automatically**
 
-Start SuperCollider by running `run-csm.sh` 
+Start SuperCollider by running `run-csm.sh`!
 
     # Running
     cd ChordScaleMatrix
