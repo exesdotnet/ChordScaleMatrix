@@ -27,7 +27,7 @@ Requirements
 
 ### Windows
 
-Using the zipped file
+Using the zipped release file
 
 * Download last release [ChordScaleMatrix](https://github.com/exesdotnet/ChordScaleMatrix/releases) 0.90 beta or later!
 * Download the [ChordSymbol](https://github.com/triss/ChordSymbol) extension!
@@ -41,9 +41,9 @@ Using the zipped file
 
 ### Linux
 
-Using the zipped file
+Using the zipped release file
 
-[Same procedere like in Windows](#Windows)
+[Same procedere like in Windows](https://github.com/exesdotnet/ChordScaleMatrix/blob/master/README.md#windows)
 
 Install script using Git
 
@@ -56,7 +56,7 @@ Running
 **Manually**
 
 Once SupperCollider is loaded you can open `ChordScaleMatrix/install_ChordScaleMatrix.scd` 
-if not all requirements are installed.
+in case not all requirements are installed.
 
 Open `ChordScaleMatrix/ChordScaleMatrix.scd` and click betweenn the parenthesis 
 and press `Strg + Return` to run the SuperCollider document!
@@ -99,7 +99,7 @@ If you use the code for some project, please [let me know](mailto:thilo[at]exes.
 TO DO
 -----
 
-*  Chord mode
+*  Mode
     *  Synchronize ocataves in `Single note mode` and `Chord mode`
 
 *  Preferences
