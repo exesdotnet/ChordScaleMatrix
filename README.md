@@ -3,7 +3,7 @@ Chord Scale Matrix for SuperCollider
 
 Status
 ------
-ChordScaleMatrix is an application for creative working with the music theory of chords, scales und tunings. ChordScaleMatrix is a step sequencer. ChordScaleMatrix is a fork of [Rukano's step sequencer](http://sccode.org/1-Up). ChordScaleMatrix is OSS. ChordScaleMatrix is beta. :( ;)
+ChordScaleMatrix is an application for creative working with the music theory of chords, scales und tunings. ChordScaleMatrix is a step sequencer. ChordScaleMatrix is a fork of [Rukano's step sequencer](http://sccode.org/1-Up). ChordScaleMatrix is OSS. ChordScaleMatrix is beta. :-( ;-)
 
 Usecases
 --------
@@ -22,6 +22,7 @@ Requirements
 * [ChordSymbol](https://github.com/triss/ChordSymbol)
 * [modfm-synth](https://github.com/filib/modfm-synth) (MIDI keyboard)
 
+
 * [SuperCollider on Github](https://github.com/supercollider/supercollider)
 * [SuperCollider plugins on Github](https://github.com/supercollider/sc-plugins)
 * [SuperCollider help](http://doc.sccode.org/Help.html)
@@ -32,7 +33,7 @@ Using the zipped release file
 
 * Download last release [ChordScaleMatrix](https://github.com/exesdotnet/ChordScaleMatrix/releases) 0.90 beta or later!
 * Download the [ChordSymbol](https://github.com/triss/ChordSymbol) extension!
-* Download the [modfm-synth](https://github.com/filib/modfm-synth) MIDI keyboard exte3nsion!
+* Download the [modfm-synth](https://github.com/filib/modfm-synth) MIDI keyboard extension!
 * Please copy the extensions in the SuperCollider extension folder! You can examine by typing `Platform.userExtensionDir.postln;` in the IDE.
 * Open the IDE!
 * In the menu `Language` click `Recompile Class Library`!
@@ -48,8 +49,8 @@ Using the zipped release file
 
 Install script using Git
 
-    # [ ChordScaleMatrix ]
-    #./install-csm.sh --git
+    # Installation using Git
+    ./install-csm.sh --git
 
 Running
 -------
@@ -65,7 +66,7 @@ and press `Strg + Return` to run the SuperCollider document!
 **Automatically**
 
     # Installation script
-    #cd ChordScaleMatrix
+    cd ChordScaleMatrix
     ./install-csm.sh
 
 Start SuperCollider by running `run-csm.sh` 
