@@ -3,11 +3,7 @@ Chord Scale Matrix for SuperCollider
 
 Status
 ------
-ChordScaleMatrix is an application for creative working with the music theory of chords, scales und tunings.
-ChordScaleMatrix is a step sequencer.
-ChordScaleMatrix is a fork of [Rukano's step sequencer](http://sccode.org/1-Up).
-ChordScaleMatrix is OSS.
-ChordScaleMatrix is beta. :( ;)
+ChordScaleMatrix is an application for creative working with the music theory of chords, scales und tunings. ChordScaleMatrix is a step sequencer. ChordScaleMatrix is a fork of [Rukano's step sequencer](http://sccode.org/1-Up). ChordScaleMatrix is OSS. ChordScaleMatrix is beta. :( ;)
 
 Usecases
 --------
@@ -29,66 +25,55 @@ Requirements
 * [ChordSymbol](https://github.com/triss/ChordSymbol)
 * [modfm-synth](https://github.com/filib/modfm-synth) (MIDI keyboard)
 
+### Windows
+
+Using the zipped file
+
+* Download last release [ChordScaleMatrix](https://github.com/exesdotnet/ChordScaleMatrix/releases) 0.90 beta or later!
+* Download the [ChordSymbol](https://github.com/triss/ChordSymbol) extension!
+* Download the [modfm-synth](https://github.com/filib/modfm-synth) MIDI keyboard exte3nsion!
+* Please copy the extensions in the SuperCollider extension folder! You can examine by typing `Platform.userExtensionDir.postln;` in the IDE.
+* Open the IDE!
+* In the menu `Language` click `Recompile Class Library`!
+* Open in SuperCollider IDE the file `ChordScaleMatrix\ChordScaleMatrix.scd`!
+* Click betweenn the parenthesis!
+* Press `Strg + Return` to run the SuperCollider document!
+
 ### Linux
 
 Using the zipped file
 
-    # Standalone installation
+[Same procedere like in Windows](#Windows)
 
 Install script using Git
 
     # [ ChordScaleMatrix ]
-    git clone https://github.com/exesdotnet/ChordScaleMatrix.git
-    cd ChordScaleMatrix
-
-    # Install as SuperCollider extension, ref http://doc.sccode.org/Guides/UsingExtensions.html
-    # On Linux
-    mkdir -p ~/.local/share/SuperCollider/Extensions || true
-    ln -s `pwd` ~/.local/share/SuperCollider/Extensions/ChordScaleMatrix
-    # On Mac OSX
-    mkdir -p "$HOME/Library/Application Support/SuperCollider/Extensions" || true
-    ln -s `pwd` "$HOME/Library/Application Support/SuperCollider/Extensions/ChordScaleMatrix"
-
-    # [ ChordSymbol ]
-    git clone https://github.com/triss/ChordSymbol.git
-    cd ChordSymbol
-    # On Linux
-    mkdir -p ~/.local/share/SuperCollider/Extensions || true
-    ln -s `pwd` ~/.local/share/SuperCollider/Extensions/ChordSymbol
-    # On Mac OSX
-    mkdir -p "$HOME/Library/Application Support/SuperCollider/Extensions" || true
-    ln -s `pwd` "$HOME/Library/Application Support/SuperCollider/Extensions/ChordSymbol"
-
-    # [ modfm-synth ]
-    git clone https://github.com/filib/modfm-synth.git
-    cd modfm-synth
-    # On Linux
-    mkdir -p ~/.local/share/SuperCollider/Extensions || true
-    ln -s `pwd` ~/.local/share/SuperCollider/Extensions/modfm-synth
-    # On Mac OSX
-    mkdir -p "$HOME/Library/Application Support/SuperCollider/Extensions" || true
-    ln -s `pwd` "$HOME/Library/Application Support/SuperCollider/Extensions/modfm-synth"
+    #./install-csm.sh --git
 
 Running
 -------
 
 **Manually**
 
-Once SupperCollider is loaded you can open `~/ChordScaleMatrix/install_ChordScaleMatrix.scd` 
+Once SupperCollider is loaded you can open `ChordScaleMatrix/install_ChordScaleMatrix.scd` 
 if not all requirements are installed.
 
-Open `~/ChordScaleMatrix/ChordScaleMatrix.scd` and click betweenn the parenthesis 
+Open `ChordScaleMatrix/ChordScaleMatrix.scd` and click betweenn the parenthesis 
 and press `Strg + Return` to run the SuperCollider document!
 
 **Automatically**
 
     # Installation script
-    #./install-csm.sh
+    #cd ChordScaleMatrix
+    ./install-csm.sh
 
 Start SuperCollider by running `run-csm.sh` 
 
     # Running
-    #./run-csm.sh
+    cd ChordScaleMatrix
+    ./run-csm.sh
+    # Alternative
+    #./run-csm.sh --app
 
 &nbsp;
 
