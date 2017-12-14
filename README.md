@@ -45,6 +45,12 @@ Alternative the [zipped Git repository](https://github.com/exesdotnet/ChordScale
 * Click betweenn the parenthesis!
 * Press `Strg + Return` to run the SuperCollider document!
 
+### MacOS
+
+Using the zipped release file
+
+[Same procedure like in Windows](https://github.com/exesdotnet/ChordScaleMatrix/blob/master/README.md#windows)
+
 ### Linux
 
 Using the zipped release file
