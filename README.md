@@ -109,6 +109,7 @@ TO DO
 
 * Mode
     * Synchronize octaves in `Single note mode` and `Chord mode`
+    * Create new ChordSymbol.shapes objects, add ChordSymbol.shapes per `ChordSymbol.shapes.put`
     
 * Synthesizers
     * Debug and optimize the synths
