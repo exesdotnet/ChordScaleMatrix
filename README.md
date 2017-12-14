@@ -73,6 +73,7 @@ Running
 -------
 
 **Manually**
+
 Once SupperCollider is loaded you can open `~/ChordScaleMatrix/install_ChordScaleMatrix.scd` 
 if not all requirements are installed.
 
