@@ -135,10 +135,11 @@ Credits
 * [SuperCollider on Github](https://github.com/supercollider/supercollider)
 * Fork of [Rukano's step sequencer](https://github.com/rukano/scprivatepool/tree/master/projects/midi_step_sequencer)
 
-ChordScaleMatrix is licensed under a 
-Creative Commons Attribution-Share Alike 3.0 Unported [(CC BY-SA 3.0)](http://creativecommons.org/licenses/by-sa/3.0/) License 
-and are copyright the Thilo Schneider, exes.net,
-2017.
+Licence
+=======
+
+ChordScaleMatrix is licensed under a Creative Commons Attribution-Share Alike 3.0 Unported [(CC BY-SA 3.0)](http://creativecommons.org/licenses/by-sa/3.0/) License.
+Copyright Thilo Schneider, exes.net, 2017
 
 Contributors
 ------------
@@ -146,6 +147,6 @@ Contributors
 0.90 beta
 * Thilo Schneider
 
-For more information please visit [exes.net](http://www.exes.net/) or send me an [e-mail](mailto:thilo[at]exes.net). 
+For more information please visit [exes.net](http://www.exes.net/) or send me an [e-mail](mailto:thilo[at]exes.net)!
 
 &nbsp;
