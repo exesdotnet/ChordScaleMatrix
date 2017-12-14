@@ -9,8 +9,6 @@ ChordScaleMatrix is a fork of [Rukano's step sequencer](http://sccode.org/1-Up).
 ChordScaleMatrix is OSS.
 ChordScaleMatrix is beta. :( ;)
 
-&nbsp;
-
 Usecases
 --------
 * Learning software for understanding the music theory of chords, scales and tuning
@@ -18,7 +16,6 @@ Usecases
 * A funny toy for just having fun and to promote creativity
 * Audio and music analysis
 * etc.
-
 
 Installation
 ------------
@@ -72,19 +69,17 @@ Install script using Git
     mkdir -p "$HOME/Library/Application Support/SuperCollider/Extensions" || true
     ln -s `pwd` "$HOME/Library/Application Support/SuperCollider/Extensions/modfm-synth"
 
-&nbsp;
-
 Running
 -------
 
-** Manually **
+**Manually**
 Once SupperCollider is loaded you can open `~/ChordScaleMatrix/install_ChordScaleMatrix.scd` 
 if not all requirements are installed.
 
 Open `~/ChordScaleMatrix/ChordScaleMatrix.scd` and click betweenn the parenthesis 
 and press `Strg + Return` to run the SuperCollider document!
 
-** Automatically **
+**Automatically**
 
     # Installation script
     #./install-csm.sh
@@ -125,7 +120,6 @@ TO DO
     *  Fix up checkbox value of `Windows in front`
 
 
-
 List of Changes
 ---------------
 
@@ -146,8 +140,6 @@ Credits
 
 * [SuperCollider on Github](https://github.com/supercollider/supercollider)
 * Fork of [Rukano's step sequencer](https://github.com/rukano/scprivatepool/tree/master/projects/midi_step_sequencer)
-
-&nbsp;
 
 ChordScaleMatrix is licensed under a 
 Creative Commons Attribution-Share Alike 3.0 Unported [(CC BY-SA 3.0)](http://creativecommons.org/licenses/by-sa/3.0/) License 
