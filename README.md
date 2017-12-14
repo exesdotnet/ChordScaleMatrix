@@ -32,8 +32,9 @@ Requirements
 Using the zipped release file
 
 * Download latest release [ChordScaleMatrix](https://github.com/exesdotnet/ChordScaleMatrix/releases) 0.90 beta or later!
-* Download the [ChordSymbol](https://github.com/triss/ChordSymbol) extension!
-* Download the [modfm-synth](https://github.com/filib/modfm-synth) MIDI keyboard extension!
+Alternative the [zipped Git repository](https://github.com/exesdotnet/ChordScaleMatrix/archive/master.zip)
+* Download the [ChordSymbol](https://github.com/triss/ChordSymbol/archive/master.zip) extension!
+* Download the [modfm-synth](https://github.com/filib/modfm-synth/archive/master.zip) MIDI keyboard extension!
 * Please copy the extensions in the SuperCollider extension folder! You can examine by typing `Platform.userExtensionDir.postln;` in the IDE.
 * Open the IDE!
 * In the menu `Language` click `Recompile Class Library`!
