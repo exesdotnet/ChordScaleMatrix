@@ -46,7 +46,7 @@ Alternative the [zipped Git repository](https://github.com/exesdotnet/ChordScale
 
 Using the zipped release file
 
-[Same procedere like in Windows](https://github.com/exesdotnet/ChordScaleMatrix/blob/master/README.md#windows)
+[Same procedure like in Windows](https://github.com/exesdotnet/ChordScaleMatrix/blob/master/README.md#windows)
 
 Install via script by typing
 
