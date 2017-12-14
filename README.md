@@ -25,7 +25,6 @@ Requirements
 * [ChordSymbol](https://github.com/triss/ChordSymbol)
 * [modfm-synth](https://github.com/filib/modfm-synth) (MIDI keyboard)
 
-
 * [SuperCollider on Github](https://github.com/supercollider/supercollider)
 * [SuperCollider plugins on Github](https://github.com/supercollider/sc-plugins)
 * [SuperCollider help](http://doc.sccode.org/Help.html)
