@@ -30,9 +30,9 @@ Requirements
 * [SuperCollider plugins on Github](https://github.com/supercollider/sc-plugins)
 * [SuperCollider help](http://doc.sccode.org/Help.html)
 * [ChordSymbol](https://github.com/triss/ChordSymbol)
-* [modfm-synth (MIDI keyboard)](https://github.com/filib/modfm-synth)
+* [modfm-synth](https://github.com/filib/modfm-synth) (MIDI keyboard)
 
-#Linux
+# Linux
 
 Install script using the zipped file
 
