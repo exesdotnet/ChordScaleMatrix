@@ -135,7 +135,7 @@ Credits
 * [SuperCollider on Github](https://github.com/supercollider/supercollider)
 * Fork of [Rukano's step sequencer](https://github.com/rukano/scprivatepool/tree/master/projects/midi_step_sequencer)
 
-Licence
+License
 =======
 
 ChordScaleMatrix is licensed under a Creative Commons Attribution-Share Alike 3.0 Unported [(CC BY-SA 3.0)](http://creativecommons.org/licenses/by-sa/3.0/) License.
