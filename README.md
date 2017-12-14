@@ -142,6 +142,7 @@ Contributors
 
 0.90 beta
 * Thilo Schneider
+
 For more information please visit [exes.net](http://www.exes.net/) or send me an [e-mail](mailto:thilo[at]exes.net). 
 
 &nbsp;
