@@ -47,13 +47,13 @@ Using the zipped release file
 
 [Same procedere like in Windows](https://github.com/exesdotnet/ChordScaleMatrix/blob/master/README.md#windows)
 
-Install script by typing
+Install via script by typing
 
     # Installation script
     cd ChordScaleMatrix
     ./install-csm.sh
     
-Install script using Git
+Install via script using Git
 
     # Installation using Git
     cd ChordScaleMatrix
