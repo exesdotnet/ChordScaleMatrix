@@ -32,9 +32,9 @@ Requirements
 * [ChordSymbol](https://github.com/triss/ChordSymbol)
 * [modfm-synth](https://github.com/filib/modfm-synth) (MIDI keyboard)
 
-# Linux
+### Linux
 
-Install script using the zipped file
+Using the zipped file
 
     # Standalone installation
 
@@ -171,9 +171,11 @@ Disclaimer
 &nbsp;
 
 **Notice:**
+
 ...
 
 __NOTE:__
+
 ...
 
 &nbsp;
