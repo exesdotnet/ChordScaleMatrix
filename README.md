@@ -31,7 +31,7 @@ Requirements
 
 Using the zipped release file
 
-* Download last release [ChordScaleMatrix](https://github.com/exesdotnet/ChordScaleMatrix/releases) 0.90 beta or later!
+* Download latest release [ChordScaleMatrix](https://github.com/exesdotnet/ChordScaleMatrix/releases) 0.90 beta or later!
 * Download the [ChordSymbol](https://github.com/triss/ChordSymbol) extension!
 * Download the [modfm-synth](https://github.com/filib/modfm-synth) MIDI keyboard extension!
 * Please copy the extensions in the SuperCollider extension folder! You can examine by typing `Platform.userExtensionDir.postln;` in the IDE.
