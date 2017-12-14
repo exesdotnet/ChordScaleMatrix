@@ -107,6 +107,9 @@ TO DO
 
 *  Mode
     *  Synchronize ocataves in `Single note mode` and `Chord mode`
+    
+*  Synthesizers
+    *  Debug and optimize the synths
 
 *  Preferences
     *  Fix up checkbox value of `Windows in front`
