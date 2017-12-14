@@ -3,11 +3,11 @@ Chord Scale Matrix for SuperCollider
 
 Status
 ------
-ChordScaleMatrix is an application for creative working with the music theory of chords, scales und tunings. ChordScaleMatrix is a step sequencer. ChordScaleMatrix is a fork of [Rukano's step sequencer](http://sccode.org/1-Up). ChordScaleMatrix is OSS. ChordScaleMatrix is beta. :-( ;-)
+ChordScaleMatrix is a step sequencer. You can create scales and random notes of a scale in a matrix window. You can also create chord progessions on selected cells in the matrix window. ChordScaleMatrix is an application for creative working with the music theory of chords, scales, tunings and progressions. ChordScaleMatrix is a fork of [Rukano's step sequencer](http://sccode.org/1-Up). ChordScaleMatrix is OSS. ChordScaleMatrix is beta. :-( ;-)
 
 Usecases
 --------
-* Learning software for understanding the music theory of chords, scales and tuning
+* Learning software for understanding the music theory of chords, chord progressions, scales and tuning
 * Therapeutic effect by playing and learning
 * A funny toy for just having fun and to promote creativity
 * Audio and music analysis
@@ -105,17 +105,20 @@ If you use the code for some project, please [let me know](mailto:thilo[at]exes.
 TO DO
 -----
 
-*  Mode
-    *  Synchronize ocataves in `Single note mode` and `Chord mode`
+* Mode
+    * Synchronize ocataves in `Single note mode` and `Chord mode`
     
-*  Synthesizers
-    *  Debug and optimize the synths
+* Synthesizers
+    * Debug and optimize the synths
+    
+* Song templates
+    * Creating new song templates especially for chord progressions
 
-*  Preferences
-    *  Fix up checkbox value of `Windows in front`
+* Preferences
+    * Fix up checkbox value of `Windows in front`
     
-*  Standalone app
-    *  Preparing the files for a standalone application
+* Standalone app
+    * Preparing the files for a standalone application
 
 
 List of Changes
@@ -123,15 +126,15 @@ List of Changes
 
 Version 0.90
 
-*  New features:
-    *  Save documents to work on an edit
+* New features:
+    * Save documents to work on an edit
 
-*  Documentation Updates:
-    *  ...
+* Documentation Updates:
+    * ...
 
-*  Issue fixes:
-    *  Fixed up chord mode
-    *  Fixed up midi preferences
+* Issue fixes:
+    * Fixed up chord mode
+    * Fixed up midi preferences
 
 Credits
 =======
