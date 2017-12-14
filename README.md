@@ -42,7 +42,7 @@ Alternative the [zipped Git repository](https://github.com/exesdotnet/ChordScale
 * Open the IDE!
 * In the menu `Language` click `Recompile Class Library`!
 * Open in SuperCollider IDE the file `ChordScaleMatrix\ChordScaleMatrix.scd`!
-* Click betweenn the parenthesis!
+* Click between the parenthesis!
 * Press `Strg + Return` to run the SuperCollider document!
 
 ### MacOS
