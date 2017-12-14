@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ $# -ne 1 ]; then
+if [ $# -ge 2 ]; then
 	echo ""
 	echo "Usage: $0 OPTIONS"
 	echo "--git : Clone the git repository"
