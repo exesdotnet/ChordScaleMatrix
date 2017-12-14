@@ -78,7 +78,7 @@ Start SuperCollider by running `run-csm.sh`
     # Running
     cd ChordScaleMatrix
     ./run-csm.sh
-    # Alternative
+    # Alternative the standalone version
     #./run-csm.sh --app
 
 &nbsp;
