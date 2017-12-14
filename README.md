@@ -119,6 +119,9 @@ TO DO
 
 *  Preferences
     *  Fix up checkbox value of `Windows in front`
+    
+*  Standalone app
+    *  Preparing the files for a standalone application
 
 
 List of Changes
@@ -152,23 +155,6 @@ Contributors
 
 0.90 beta
 * Thilo Schneider
-
-For more information please visit [exes.net](http://www.exes.net/) or send me an
-[e-mail](mailto:thilo[at]exes.net). 
-
-&nbsp;
-
-Disclaimer
-==========
-
-&nbsp;
-
-**Notice:**
-
-...
-
-__NOTE:__
-
-...
+For more information please visit [exes.net](http://www.exes.net/) or send me an [e-mail](mailto:thilo[at]exes.net). 
 
 &nbsp;
