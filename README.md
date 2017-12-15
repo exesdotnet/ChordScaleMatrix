@@ -34,7 +34,7 @@ Requirements
 Using the zipped release file
 
 * In case you have not already install [SuperCollider](http://supercollider.sourceforge.net/downloads/) and SuperCollider plugins.
-* Download latest release [ChordScaleMatrix](https://github.com/exesdotnet/ChordScaleMatrix/releases) 0.90 beta or later!
+* Download latest release [ChordScaleMatrix](https://github.com/exesdotnet/ChordScaleMatrix/releases) 0.91 beta or later!
 Alternative the [zipped Git repository](https://github.com/exesdotnet/ChordScaleMatrix/archive/master.zip)
 * Download the [ChordSymbol](https://github.com/triss/ChordSymbol/archive/master.zip) extension!
 * Download the [modfm-synth](https://github.com/filib/modfm-synth/archive/master.zip) MIDI keyboard extension!
@@ -133,6 +133,11 @@ TO DO
 
 List of Changes
 ---------------
+
+Version 0.91
+
+* New features:
+    * Added TabbedView2 for better using the gui. In Windows the control window is too high for smaller screens.
 
 Version 0.90
 
