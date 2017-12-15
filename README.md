@@ -3,7 +3,7 @@ Chord Scale Matrix for SuperCollider
 
 Status
 ------
-ChordScaleMatrix is a step sequencer. You can create scales and random notes of a scale in a matrix window. You can also create chord progessions on selected cells in the matrix window. ChordScaleMatrix is an application for creative working with the music theory of chords, scales, tunings and progressions. You are able to send to an other MIDI device. ChordScaleMatrix is a fork of [Rukano's step sequencer](http://sccode.org/1-Up). ChordScaleMatrix is OSS. ChordScaleMatrix is beta. :-( ;-)
+ChordScaleMatrix is a step sequencer. You can create scales and random notes of a scale in a matrix window. You can also create chord progessions on selected cells in the matrix window. ChordScaleMatrix is an application for creative working with the music theory of chords, scales, tunings and progressions. You are able to send to an other MIDI device. ChordScaleMatrix is a fork of [Rukano's step sequencer](http://sccode.org/1-Up). ChordScaleMatrix is OSS. ChordScaleMatrix is beta. :-( ;-) ChordScaleMatrix was just tested with Supercollider 3.6.6 .
 
 [![ScreenShot](https://github.com/exesdotnet/ChordScaleMatrix/blob/master/screenshot-csm.png)](https://github.com/exesdotnet/ChordScaleMatrix/)
 
