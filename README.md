@@ -41,7 +41,7 @@ Alternative the [zipped Git repository](https://github.com/exesdotnet/ChordScale
 * Download the [ChordSymbol](https://github.com/triss/ChordSymbol/archive/master.zip) extension!
 * Download the [modfm-synth](https://github.com/filib/modfm-synth/archive/master.zip) MIDI keyboard extension!
 * Please copy the extensions in the SuperCollider extension folder! You can examine by typing `Platform.userExtensionDir.postln;` in the IDE.
-* Download the [TabbedView2](https://github.com/jmuxfeldt/TabbedView2) and [TabbedView2_QT](https://github.com/jmuxfeldt/TabbedView2_QT) quarks!
+* Download the [TabbedView2](https://github.com/jmuxfeldt/TabbedView2/archive/master.zip) and [TabbedView2_QT](https://github.com/jmuxfeldt/TabbedView2_QT/archive/master.zip) quarks!
 * Copy the quarks in the Quarks directory (You get the path by typing `Platform.userAppSupportDir;`.) or install the quarks via `ChordScaleMatrix/install_ChordScaleMatrix.scd`! See `Quarks.gui;`! You need to have also to install [SVN](https://subversion.apache.org/), especially for Windows.
 * Open the IDE!
 * In the menu `Language` click `Recompile Class Library`!
