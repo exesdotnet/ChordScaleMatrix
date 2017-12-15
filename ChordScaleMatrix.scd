@@ -1,6 +1,7 @@
 (
 /*
 https://github.com/exesdotnet/ChordScaleMatrix/
+ChordScaleMatrix 0.90 beta
 */
 
 //Server.default = s = Server.internal;
@@ -8,7 +9,7 @@ s.serverRunning.not.if({ s.boot });
 //postf("\tDEBUG: %\n", "----------------");
 
 s.waitForBoot({
-	var screen, layout, window, kbwin, decorator, button, matrix, buttonMatrix, leds, chordsel;
+	var screen, layout, window, t, kbwin, decorator, button, matrix, buttonMatrix, leds, chordsel;
 	var synthName, scale, freqtune, octave, root, transp, sustain, amp;
 	var font, fontsize, txtalign;
 	var player, playButton, saveButton, control, controlView, sendType;
@@ -223,7 +224,7 @@ s.waitForBoot({
 	kbwin.window = Window("Chord Scale Matrix - Piano Keyboard",
 		Rect((screen.width - layout.width) / 2,
 			((screen.height - layout.height) / 2) + 24,
-		layout.width, 144)
+			layout.width, 144)
 	).front;
 	kbwin.window.userCanClose_(false);
 
@@ -257,28 +258,28 @@ s.waitForBoot({
 	/*menu = PopUpMenu(kbwin.window, Rect(224, 160, 200, 24))
 	.items_(chordnames)
 	.action_({arg item;
-		chord = chords[item.value][1];
-		postf("%\n", chord);
-		keyb.showScale(chord, fundamental, Color.green);
-		play.focus;
+	chord = chords[item.value][1];
+	postf("%\n", chord);
+	keyb.showScale(chord, fundamental, Color.green);
+	play.focus;
 	});
 
 	play = Button(kbwin.window, Rect(424, 160, 120, 24))
 	.states_([["Play"]])
 	.action_({
-		Task({
-			/*chord.do({arg note;
-				note = note + fundamental;
-				Synth(\midikeyboardsine, [\freq, note.midicps]);
-				0.4.wait;
-			});
-			0.4.wait;*/
-			chord.do({arg note;
-				note = note + fundamental;
-				note.midicps.postln;
-				Synth(\midikeyboardsine, [\freq, note.midicps, \amp, 0.1]);
-			});
-		}).start;
+	Task({
+	/*chord.do({arg note;
+	note = note + fundamental;
+	Synth(\midikeyboardsine, [\freq, note.midicps]);
+	0.4.wait;
+	});
+	0.4.wait;*/
+	chord.do({arg note;
+	note = note + fundamental;
+	note.midicps.postln;
+	Synth(\midikeyboardsine, [\freq, note.midicps, \amp, 0.1]);
+	});
+	}).start;
 	});*/
 
 	// player
@@ -349,7 +350,7 @@ s.waitForBoot({
 	// control window
 	control = ();
 	control.width = (screen.width - layout.width) / 2;
-	control.height = 740;
+	control.height = layout.height + (layout.button.y + 10) + (layout.button.y + 10);
 
 	control.window = Window("Chord Scale Matrix - Control", Rect(0, (screen.height - control.height - 22),
 		control.width, control.height),
@@ -364,489 +365,514 @@ s.waitForBoot({
 	control.button.height = 24;
 	control.button.dim = (control.button.width@control.button.height);
 
-	// chord types
-	StaticText(control.window, control.button.dim).string_("Chord type").align_(txtalign);
-	control.chooseChord = PopUpMenu(control.window, (control.width / 2)@control.button.dim.y)
-	.items_(ChordSymbol.shapes.keys.asArray.sort)
-	.action_({ |menu|
-		chordsym = ChordSymbol.shapes.at(menu.item);
-		//postf("%\n", chordsym);
-		keyb.clear; keyb.showScale(chordsym, fundamental, Color.green);
-		chordstr = menu.item.asString;
-		gchordsel = menu.value;
-		if(runCh == true) { chordInterChange.value(nil, menu.value); };
-	});
-	control.chooseChord.valueAction_(0);
-	control.chooseChord.enabled = false;
-	keyb.clear;
+	t = TabbedView2.new(control.window, Rect(0, 0,
+		control.width, control.height));
 
-	chordInterChange = { arg chordbtnsel, chordsel;
-		var ret;
-		postf("% %\n", chordbtnsel, chordsel);
+	t.add("Edit").flow({|w|
 
-		if(chordsel.isNil) {
-			if(gchordsel.isNil) {
-				chordsel = 0;
+		StaticText(w, control.width@10); // separator
+
+		// chord types
+		StaticText(w, control.button.dim).string_("Chord type").align_(txtalign);
+		control.chooseChord = PopUpMenu(w, (control.width / 2)@control.button.dim.y)
+		.items_(ChordSymbol.shapes.keys.asArray.sort)
+		.action_({ |menu|
+			chordsym = ChordSymbol.shapes.at(menu.item);
+			//postf("%\n", chordsym);
+			keyb.clear; keyb.showScale(chordsym, fundamental, Color.green);
+			chordstr = menu.item.asString;
+			gchordsel = menu.value;
+			if(runCh == true) { chordInterChange.value(nil, menu.value); };
+		});
+		control.chooseChord.valueAction_(0);
+		control.chooseChord.enabled = false;
+		keyb.clear;
+
+		chordInterChange = { arg chordbtnsel, chordsel;
+			var ret;
+			postf("% %\n", chordbtnsel, chordsel);
+
+			if(chordsel.isNil) {
+				if(gchordsel.isNil) {
+					chordsel = 0;
+				}{
+					chordsel = gchordsel;
+				};
+			};
+			if(chordbtnsel.isNil) {
+				if(gchordbtnsel.notNil) {
+					chordbtnsel = gchordbtnsel;
+					chordrix.put(0, chordbtnsel, chordsel);
+				};
 			}{
-				chordsel = gchordsel;
 			};
-		};
-		if(chordbtnsel.isNil) {
-			if(gchordbtnsel.notNil) {
-				chordbtnsel = gchordbtnsel;
-				chordrix.put(0, chordbtnsel, chordsel);
+			runCh = false;
+			if(chordrix.at(0, chordbtnsel).value.notNil) {
+				control.chooseChord.valueAction_(chordrix.at(0, chordbtnsel).value);
+			}{
+				control.chooseChord.valueAction_(0);
 			};
-		}{
+			runCh = true;
+			postf("%\n", chordrix);
+			ret;
 		};
-		runCh = false;
-		if(chordrix.at(0, chordbtnsel).value.notNil) {
-			control.chooseChord.valueAction_(chordrix.at(0, chordbtnsel).value);
-		}{
-			control.chooseChord.valueAction_(0);
-		};
-		runCh = true;
-		postf("%\n", chordrix);
-		ret;
-	};
 
-	// mode
-	StaticText(control.window, control.button.dim).string_("Mode").align_(txtalign);
-	control.chooseMode = PopUpMenu(control.window, (control.width / 2)@control.button.dim.y)
-	.items_(["Single note mode", "Chord mode"])
-	.action_({ |menu|
-		if(menu.value == 1){
-			control.chooseChord.enabled = true;
-			chordsel.do({ arg item; item.enabled = true; });
-			//control.chooseChord.valueAction_(18);
-			gMode = true;
-		}{
-			control.chooseChord.enabled = false;
-			chordsel.do({ arg item; item.enabled = false; item.value_(0); });
-			//control.chooseChord.valueAction_(0);
-			gMode = false;
-			keyb.clear;
-		};
-	}).toolTip_("Switch between single note and chord mode");
-	control.chooseMode.valueAction_(0);
+		// mode
+		StaticText(w, control.button.dim).string_("Mode").align_(txtalign);
+		control.chooseMode = PopUpMenu(w, (control.width / 2)@control.button.dim.y)
+		.items_(["Single note mode", "Chord mode"])
+		.action_({ |menu|
+			if(menu.value == 1){
+				control.chooseChord.enabled = true;
+				chordsel.do({ arg item; item.enabled = true; });
+				//control.chooseChord.valueAction_(18);
+				gMode = true;
+			}{
+				control.chooseChord.enabled = false;
+				chordsel.do({ arg item; item.enabled = false; item.value_(0); });
+				//control.chooseChord.valueAction_(0);
+				gMode = false;
+				keyb.clear;
+			};
+		}).toolTip_("Switch between single note and chord mode");
+		control.chooseMode.valueAction_(0);
 
-	StaticText(control.window, control.width@10); // separator
+		StaticText(w, control.width@10); // separator
 
-	// scale
-	StaticText(control.window, control.button.dim).align_(txtalign).string_("Scale");
-	control.chooseScale = PopUpMenu(control.window, (control.width / 2)@control.button.dim.y)
-	.items_(ScaleInfo.scales.keys.asArray.sort)
-	.action_({ |menu|
-		scale = ScaleInfo.at(menu.item);
-	});
-	//control.chooseScale.valueAction_(0);
-	control.chooseScale.valueAction_(11); // chromatic
+		// scale
+		StaticText(w, control.button.dim).align_(txtalign).string_("Scale");
+		control.chooseScale = PopUpMenu(w, (control.width / 2)@control.button.dim.y)
+		.items_(ScaleInfo.scales.keys.asArray.sort)
+		.action_({ |menu|
+			scale = ScaleInfo.at(menu.item);
+		});
+		//control.chooseScale.valueAction_(0);
+		control.chooseScale.valueAction_(11); // chromatic
 
-	// tuning
-	StaticText(control.window, control.button.dim).align_(txtalign).string_("Tuning");
-	control.chooseTuning = PopUpMenu(control.window, (control.width / 2)@control.button.dim.y)
-	.items_(TuningInfo.tunings.keys.asArray.sort)
-	.action_({ |menu|
-		scale.tuning_(menu.item);
-	});
-	//control.chooseTuning.valueAction_(0);
-	control.chooseTuning.valueAction_(3); // et12
+		// tuning
+		StaticText(w, control.button.dim).align_(txtalign).string_("Tuning");
+		control.chooseTuning = PopUpMenu(w, (control.width / 2)@control.button.dim.y)
+		.items_(TuningInfo.tunings.keys.asArray.sort)
+		.action_({ |menu|
+			scale.tuning_(menu.item);
+		});
+		//control.chooseTuning.valueAction_(0);
+		control.chooseTuning.valueAction_(3); // et12
 
-	StaticText(control.window, control.width@10); // separator
+		StaticText(w, control.width@10); // separator
 
-	// C / A hertz frequenz tuning
-	/*StaticText(control.window, control.button.dim).align_(txtalign).string_("Frequence tuning");
-	EZSlider(control.window, (control.width / 2)@control.button.dim.y,
-		controlSpec: [1,1000, \linear, 1].asSpec, initVal: freqtune, numberWidth:36, gap:0@0)
-	.action_({ |v|
-		freqtune = v.value;
-	});*/
-
-	// root
-	StaticText(control.window, control.button.dim).align_(txtalign).string_("Root note");
-	control.rootSlide = EZSlider(control.window, (control.width / 2)@control.button.dim.y,
-		controlSpec: [-12,24, \linear, 1].asSpec, initVal: root, numberWidth:36, gap:0@0)
-	.action_({ |v|
-		root = v.value;
-	});
-
-	// octave
-	StaticText(control.window, control.button.dim).align_(txtalign).string_("Octave");
-	control.octSlide = EZSlider(control.window, (control.width / 2)@control.button.dim.y,
-		controlSpec: [1,8, \linear, 1].asSpec, initVal: octave, numberWidth:36, gap:0@0)
-	.action_({ |v|
-		octave = v.value;
-	});
-
-	// transpose
-	StaticText(control.window, control.button.dim).align_(txtalign).string_("Transposing");
-	control.transpSlide = EZSlider(control.window, (control.width / 2)@control.button.dim.y,
-		controlSpec: [-24,24, \linear, 1].asSpec, initVal: transp, numberWidth:36, gap:0@0)
-	.action_({ |v|
-		transp = v.value;
-	});
-
-	// tempo
-	StaticText(control.window, control.button.dim).align_(txtalign).string_("Tempo");
-	control.tempoSlide = EZSlider(control.window,
-		(control.width / 2)@control.button.dim.y,
-		controlSpec: [1, 320, \linear, 0.1].asSpec, initVal: 60, numberWidth:36, gap:0@0)
-	.action_({ |v|
-		TempoClock.default.tempo_(v.value / 60);
-	})
-	.valueAction_(60);
-
-	StaticText(control.window, control.width@10); // separator
-
-	// synth
-	StaticText(control.window, control.button.dim).align_(txtalign).string_("Synthesizer");
-	control.chooseSynth = PopUpMenu(control.window, (control.width / 2)@control.button.dim.y)
-	.items_(synthList)
-	.action_({ |menu|
-		synthName = menu.item;
-	});
-
-	// legato
-	StaticText(control.window, control.button.dim).align_(txtalign).string_("Legato (duration)");
-	control.durSlide = EZSlider(control.window, (control.width / 2)@control.button.dim.y,
-		controlSpec: [0.001, 2, \linear, 0.01, 0.8].asSpec,
-		initVal: 0.8, labelWidth: control.button.dim.x + 10, numberWidth:36, gap:0@0)
-	.action_({ |v|
-		sustain = v.value;
-	})
-	.valueAction_(0.8);
-
-	// midi velocity
-	StaticText(control.window, control.button.dim).string_("Note amplitude").align_(txtalign);
-	control.ampSlide = EZSlider(control.window, (control.width / 2)@control.button.dim.y,
-		numberWidth:36, gap: 0@0
-	)
-	.action_({ |v|
-		amp = v.value;
-	})
-	.valueAction_(0.2);
-
-	StaticText(control.window, control.width@10); // separator
-
-	// send midi
-	sendType = 0;
-	StaticText(control.window, control.button.dim).string_("Send to").align_(txtalign);
-	control.chooseSend = PopUpMenu(control.window, (control.width / 2)@control.button.dim.y)
-	.items_(["SC synthesizer", "MIDI", "Both"])
-	.action_({ |menu|
-		sendType = menu.value;
-		if(menu.value != 0){
-			MIDIClient.init;
-			control.chooseMidiDev.items_(
-				MIDIClient.destinations.collect{ |aDevice|
-					aDevice.name.asString
-				}
+		// random scale
+		Button(w, (control.width / 2) - 10@control.button.dim.y)
+		.states_([["Random scale"]])
+		.action_({
+			control.chooseScale.valueAction_(
+				control.chooseScale.items.indexOf(control.chooseScale.items.choose)
 			);
-			midiDevice = MIDIOut(0);
-		}{
-			control.chooseMidiDev.items_(["Sending to SC only"]);
-		};
-	});
+		});
 
-	// midi device
-	midiDevice = nil;
-	StaticText(control.window, control.button.dim).string_("MIDI device").align_(txtalign);
-	control.chooseMidiDev = PopUpMenu(control.window, (control.width / 2)@control.button.dim.y)
-	.items_(["Sending to SC only"])
-	.action_({ |menu|
-		midiDevice = MIDIOut(menu.value);
-		postf("\tDEBUG: % -- %\n",
-			MIDIClient.destinations[menu.value].device,
-			MIDIClient.destinations[menu.value].name
-		);
-	});
+		// random tuning
+		Button(w, (control.width / 2) - 20@control.button.dim.y)
+		.states_([["Random tuning"]])
+		.action_({
+			control.chooseTuning.valueAction_(
+				control.chooseTuning.items.indexOf(control.chooseTuning.items.choose)
+			);
+		});
 
-	// midi channel
-	midiChannel = 0;
-	StaticText(control.window, control.button.dim).string_("MIDI channel").align_(txtalign);
-	control.chooseChan = PopUpMenu(control.window, (control.width / 2)@control.button.dim.y)
-	.items_((0..15).collect{ |item| item.asString })
-	.action_({ |menu|
-		midiChannel = menu.value;
-	});
-
-	StaticText(control.window, control.width@10); // separator
-
-	// random scale
-	Button(control.window, (control.width / 2) - 10@control.button.dim.y)
-	.states_([["Random scale"]])
-	.action_({
-		control.chooseScale.valueAction_(
-			control.chooseScale.items.indexOf(control.chooseScale.items.choose)
-		);
-	});
-
-	// random tuning
-	Button(control.window, (control.width / 2) - 20@control.button.dim.y)
-	.states_([["Random tuning"]])
-	.action_({
-		control.chooseTuning.valueAction_(
-			control.chooseTuning.items.indexOf(control.chooseTuning.items.choose)
-		);
-	});
-
-	// random synth
-	/*Button(control.window, (control.width / 2) - 10@control.button.dim.y)
-	.states_([["Random synthesizer"]])
-	.action_({
+		// random synth
+		/*Button(control.window, (control.width / 2) - 10@control.button.dim.y)
+		.states_([["Random synthesizer"]])
+		.action_({
 		control.chooseSynth.valueAction_(
-			control.chooseSynth.items.indexOf(control.chooseSynth.items.choose)
+		control.chooseSynth.items.indexOf(control.chooseSynth.items.choose)
 		)
-	});*/
+		});*/
 
-	// random notes in matrix
-	Button(control.window, (control.width / 2) - 10@control.button.dim.y)
-	.states_([["Random notation"]])
-	.action_({
-		/*var rndb;
-		if(control.chooseChord.enabled == true) {
+		// random notes in matrix
+		Button(w, (control.width / 2) - 10@control.button.dim.y)
+		.states_([["Random notation"]])
+		.action_({
+			/*var rndb;
+			if(control.chooseChord.enabled == true) {
 			rndb = [1,0].choose;
-		}{
-			rndb = [1,0].wchoose([1,10].normalizeSum);
-		};*/
-		buttonMatrix.colsDo{ |col, pos|
-			col.do{ |item, i|
-				buttonMatrix.at(i, pos).valueAction_([1,0].wchoose([1,10].normalizeSum));
-			}
-		}
-	}).toolTip_("Creates random notes in the matrtix window");
-
-	// clear matrix
-	Button(control.window, (control.width / 2) - 20@control.button.dim.y)
-	.states_([["Clear matrix"]])
-	.action_({
-		buttonMatrix.colsDo{ |col, pos|
-			col.do{ |item, i|
-				buttonMatrix.at(i, pos).valueAction_(0);
-			}
-		};
-		chordrix.colsDo{ |col, pos|
-			col.do{ |item, i|
-				postf("% %\n", item, i);
-				chordrix.put(0, pos, 0);
-			}
-		}
-	});
-
-	StaticText(control.window, control.width@10); // separator
-
-	// play / pause
-	playButton = Button(control.window, (control.width / 2) - 10@control.button.dim.y)
-	.states_([["Play"], ["Pause", Color.black, Color.green]])
-	.action_({ |v|
-		if(v.value == 1){
-			player.play;
-			//playButton.states_([["Play"], ["Pause", Color.black, Color.green]]);
-		}{
-			player.pause;
-			//playButton.states_([["Play", Color.white, Color.gray], ["Pause", Color.black, Color.green]]);
-		}
-	});
-
-	// stop
-	Button(control.window, (control.width / 2) - 20@control.button.dim.y)
-	.states_([["Stop"]])
-	.action_({
-		player.stop;
-		player.reset;
-		playButton.value_(0);
-		leds.do{ |led| led.value_(0) };
-	});
-
-	StaticText(control.window, control.width@10); // separator
-
-	// open file
-	Button(control.window, (control.width / 2) - 10@control.button.dim.y)
-	.states_([["Open file"]])
-	.action_({ |v|
-		Dialog.openPanel({ arg path;
-			postf("% was opened.\n", path);
-			if (File.existsCaseSensitive(path)) {
-				f = File(path, "r"); f.isOpen;
-				t = SemiColonFileReader(f);
-				t.read.postcs;
-				f.close;
-
-				fileprefs.value(path);
-				control.statusBar.string(" "++path++" loaded");
 			}{
-				"File does not exist.".postln;
+			rndb = [1,0].wchoose([1,10].normalizeSum);
+			};*/
+			buttonMatrix.colsDo{ |col, pos|
+				col.do{ |item, i|
+					buttonMatrix.at(i, pos).valueAction_([1,0].wchoose([1,10].normalizeSum));
+				}
 			}
+		}).toolTip_("Creates random notes in the matrtix window");
 
-			},{
-				"'Open file' cancelled".postln;
-		}, multipleSelection: false);
+		// clear matrix
+		Button(w, (control.width / 2) - 20@control.button.dim.y)
+		.states_([["Clear matrix"]])
+		.action_({
+			buttonMatrix.colsDo{ |col, pos|
+				col.do{ |item, i|
+					buttonMatrix.at(i, pos).valueAction_(0);
+				}
+			};
+			chordrix.colsDo{ |col, pos|
+				col.do{ |item, i|
+					postf("% %\n", item, i);
+					chordrix.put(0, pos, 0);
+				}
+			}
+		});
+
+		StaticText(w, control.width@10); // separator
+
+
+		// play / pause
+		playButton = Button(w, (control.width / 2) - 10@control.button.dim.y)
+		.states_([["Play"], ["Pause", Color.black, Color.green]])
+		.action_({ |v|
+			if(v.value == 1){
+				player.play;
+				//playButton.states_([["Play"], ["Pause", Color.black, Color.green]]);
+			}{
+				player.pause;
+				//playButton.states_([["Play", Color.white, Color.gray], ["Pause", Color.black, Color.green]]);
+			}
+		});
+
+		// stop
+		Button(w, (control.width / 2) - 20@control.button.dim.y)
+		.states_([["Stop"]])
+		.action_({
+			player.stop;
+			player.reset;
+			playButton.value_(0);
+			leds.do{ |led| led.value_(0) };
+		});
+
 	});
 
-	// save as
-	Button(control.window, (control.width / 2) - 20@control.button.dim.y)
-	.states_([["Save file as"]])
-	.action_({ |v|
-		Dialog.savePanel({ arg path;
-			var prefs = prefsx.value(nil);
-			datastr = filedata.value(matrix.asCompileString, chordrix.asCompileString, prefs);
+	t.add("Synth / MIDI").flow({|w|
 
-			//if (File.existsCaseSensitive(path)) {
+		StaticText(w, control.width@10); // separator
+
+		// C / A hertz frequenz tuning
+		/*StaticText(control.window, control.button.dim).align_(txtalign).string_("Frequence tuning");
+		EZSlider(control.window, (control.width / 2)@control.button.dim.y,
+		controlSpec: [1,1000, \linear, 1].asSpec, initVal: freqtune, numberWidth:36, gap:0@0)
+		.action_({ |v|
+		freqtune = v.value;
+		});*/
+
+		// root
+		StaticText(w, control.button.dim).align_(txtalign).string_("Root note");
+		control.rootSlide = EZSlider(w, (control.width / 2)@control.button.dim.y,
+			controlSpec: [-12,24, \linear, 1].asSpec, initVal: root, numberWidth:36, gap:0@0)
+		.action_({ |v|
+			root = v.value;
+		});
+
+		// octave
+		StaticText(w, control.button.dim).align_(txtalign).string_("Octave");
+		control.octSlide = EZSlider(w, (control.width / 2)@control.button.dim.y,
+			controlSpec: [1,8, \linear, 1].asSpec, initVal: octave, numberWidth:36, gap:0@0)
+		.action_({ |v|
+			octave = v.value;
+		});
+
+		// transpose
+		StaticText(w, control.button.dim).align_(txtalign).string_("Transposing");
+		control.transpSlide = EZSlider(w, (control.width / 2)@control.button.dim.y,
+			controlSpec: [-24,24, \linear, 1].asSpec, initVal: transp, numberWidth:36, gap:0@0)
+		.action_({ |v|
+			transp = v.value;
+		});
+
+		// tempo
+		StaticText(w, control.button.dim).align_(txtalign).string_("Tempo");
+		control.tempoSlide = EZSlider(w,
+			(control.width / 2)@control.button.dim.y,
+			controlSpec: [1, 320, \linear, 0.1].asSpec, initVal: 60, numberWidth:36, gap:0@0)
+		.action_({ |v|
+			TempoClock.default.tempo_(v.value / 60);
+		})
+		.valueAction_(60);
+
+		StaticText(w, control.width@10); // separator
+
+		// synth
+		StaticText(w, control.button.dim).align_(txtalign).string_("Synthesizer");
+		control.chooseSynth = PopUpMenu(w, (control.width / 2)@control.button.dim.y)
+		.items_(synthList)
+		.action_({ |menu|
+			synthName = menu.item;
+		});
+
+		// legato
+		StaticText(w, control.button.dim).align_(txtalign).string_("Legato (duration)");
+		control.durSlide = EZSlider(w, (control.width / 2)@control.button.dim.y,
+			controlSpec: [0.001, 2, \linear, 0.01, 0.8].asSpec,
+			initVal: 0.8, labelWidth: control.button.dim.x + 10, numberWidth:36, gap:0@0)
+		.action_({ |v|
+			sustain = v.value;
+		})
+		.valueAction_(0.8);
+
+		// midi velocity
+		StaticText(w, control.button.dim).string_("Note amplitude").align_(txtalign);
+		control.ampSlide = EZSlider(w, (control.width / 2)@control.button.dim.y,
+			numberWidth:36, gap: 0@0
+		)
+		.action_({ |v|
+			amp = v.value;
+		})
+		.valueAction_(0.2);
+
+		StaticText(w, control.width@10); // separator
+
+		// send midi
+		sendType = 0;
+		StaticText(w, control.button.dim).string_("Send to").align_(txtalign);
+		control.chooseSend = PopUpMenu(w, (control.width / 2)@control.button.dim.y)
+		.items_(["SC synthesizer", "MIDI", "Both"])
+		.action_({ |menu|
+			sendType = menu.value;
+			if(menu.value != 0){
+				MIDIClient.init;
+				control.chooseMidiDev.items_(
+					MIDIClient.destinations.collect{ |aDevice|
+						aDevice.name.asString
+					}
+				);
+				midiDevice = MIDIOut(0);
+			}{
+				control.chooseMidiDev.items_(["Sending to SC only"]);
+			};
+		});
+
+		// midi device
+		midiDevice = nil;
+		StaticText(w, control.button.dim).string_("MIDI device").align_(txtalign);
+		control.chooseMidiDev = PopUpMenu(w, (control.width / 2)@control.button.dim.y)
+		.items_(["Sending to SC only"])
+		.action_({ |menu|
+			midiDevice = MIDIOut(menu.value);
+			postf("\tDEBUG: % -- %\n",
+				MIDIClient.destinations[menu.value].device,
+				MIDIClient.destinations[menu.value].name
+			);
+		});
+
+		// midi channel
+		midiChannel = 0;
+		StaticText(w, control.button.dim).string_("MIDI channel").align_(txtalign);
+		control.chooseChan = PopUpMenu(w, (control.width / 2)@control.button.dim.y)
+		.items_((0..15).collect{ |item| item.asString })
+		.action_({ |menu|
+			midiChannel = menu.value;
+		});
+
+		StaticText(w, control.width@10); // separator
+
+	});
+
+	t.add("Preferences").flow({|w|
+
+		StaticText(w, control.width@10); // separator
+
+		// font
+		/*StaticText(control.window, control.button.dim).string_("Font").align_(txtalign);
+		control.fonts = PopUpMenu(control.window, control.button.dim)
+		.items_(Font.availableFonts); //[Font.defaultMonoFace, Font.defaultSansFace, Font.defaultSerifFace]
+		//["Monospace"],["Sans serif"],["Serif"]
+
+		StaticText(control.window, control.button.dim).string_("Size").align_(txtalign);
+		control.fontsize = PopUpMenu(control.window, control.button.dim)
+		.items_(["6","7","8","9","10","12","13","14","18","24","36","48","60","72","96"])
+		.action_({ |v|
+		/*var font;
+		font = Font(y.items[y.value].asInteger);
+		a.font_(font).refresh;*/
+		});*/
+
+		// GUI theme
+		StaticText(w, control.button.dim).string_("GUI theme").align_(txtalign);
+		control.chooseTheme = PopUpMenu(w, (control.width / 2)@control.button.dim.y)
+		.items_(["System", "Light", "Dark"])
+		.action_({ |menu|
+			QtGUI.palette = palettes.at(menu.value);
+		});
+		control.chooseTheme.valueAction_(0);
+
+		// window on top
+		/*Button(control.window, (control.width - 20)@control.button.dim.y)
+		.states_([["Windows always on top"], ["Flexible window state", Color.white, Color.grey]])
+		.action_({ |v|
+		if(v.value == 1){
+		kbwin.window.alwaysOnTop_(true);
+		control.window.alwaysOnTop_(true);
+		window.alwaysOnTop_(true);
+		}{
+		kbwin.window.alwaysOnTop_(false);
+		control.window.alwaysOnTop_(false);
+		window.alwaysOnTop_(false);
+		}
+		});*/
+		StaticText(w, control.button.dim).align_(txtalign).string_("Windows in front");
+		control.cbFront = CheckBox(w, (control.width / 2)@control.button.dim.y)
+		.action_({ |v|
+			if(v.value == true){
+				kbwin.window.alwaysOnTop_(true);
+				control.window.alwaysOnTop_(true);
+				window.alwaysOnTop_(true);
+			}{
+				kbwin.window.alwaysOnTop_(false);
+				control.window.alwaysOnTop_(false);
+				window.alwaysOnTop_(false);
+			}
+		});
+	});
+
+	t.add("File").flow({|w|
+
+		StaticText(w, control.width@10); // separator
+
+		// open file
+		Button(w, (control.width / 2) - 10@control.button.dim.y)
+		.states_([["Open file"]])
+		.action_({ |v|
+			Dialog.openPanel({ arg path;
+				postf("% was opened.\n", path);
+				if (File.existsCaseSensitive(path)) {
+					f = File(path, "r"); f.isOpen;
+					t = SemiColonFileReader(f);
+					t.read.postcs;
+					f.close;
+
+					fileprefs.value(path);
+					control.statusBar.string(" "++path++" loaded");
+				}{
+					"File does not exist.".postln;
+				}
+
+				},{
+					"'Open file' cancelled".postln;
+			}, multipleSelection: false);
+		});
+
+		// save as
+		Button(w, (control.width / 2) - 20@control.button.dim.y)
+		.states_([["Save file as"]])
+		.action_({ |v|
+			Dialog.savePanel({ arg path;
+				var prefs = prefsx.value(nil);
+				datastr = filedata.value(matrix.asCompileString, chordrix.asCompileString, prefs);
+
+				//if (File.existsCaseSensitive(path)) {
 				f = File(path, "w");
 				f.write(datastr);
 				f.close;
-			//}{
-			//	"File does not exist.".postln;
-			//}
-			postf("File was created in %.\n", path);
-			currentFile = path;
-			saveButton.enabled = true;
+				//}{
+				//	"File does not exist.".postln;
+				//}
+				postf("File was created in %.\n", path);
+				currentFile = path;
+				saveButton.enabled = true;
 
-			issaved = true;
-			},{
-				"'Save file as' canceled".postln;
+				issaved = true;
+				},{
+					"'Save file as' canceled".postln;
+			});
 		});
-	});
 
-	// save
-	saveButton = Button(control.window, (control.width / 2) - 10@control.button.dim.y)
-	.states_([["Save file"]])
-	.action_({
-		if(currentFile.asString != "", {
+		// save
+		saveButton = Button(w, (control.width / 2) - 10@control.button.dim.y)
+		.states_([["Save file"]])
+		.action_({
+			if(currentFile.asString != "", {
+				var prefs = prefsx.value(nil);
+				datastr = filedata.value(matrix.asCompileString, chordrix.asCompileString, prefs);
+
+				f = File(currentFile, "w");
+				f.write(datastr);
+				f.close;
+				postf("File was created in %.\n", currentFile);
+
+				issaved = true;
+				},{
+					"No file was specified.".postln;
+			});
+		});
+		if(currentFile.asString == "", {
+			saveButton.enabled = false;
+		});
+
+		// exit
+		Button(w, (control.width / 2) - 20@control.button.dim.y)
+		.states_([["Exit"]])
+		.action_({
 			var prefs = prefsx.value(nil);
 			datastr = filedata.value(matrix.asCompileString, chordrix.asCompileString, prefs);
 
-			f = File(currentFile, "w");
+			f = File(File.getcwd++"/ChordScaleMatrix".standardizePath++"/main.csmx", "w");
 			f.write(datastr);
 			f.close;
-			postf("File was created in %.\n", currentFile);
 
-			issaved = true;
-		},{
-			"No file was specified.".postln;
-		});
-	});
-	if(currentFile.asString == "", {
-		saveButton.enabled = false;
-	});
+			if (issaved == false) {
+				f = File(File.getcwd++"/ChordScaleMatrix".standardizePath++"/lastfile.csmx.preferences", "w");
+				f.write(File.getcwd++"/ChordScaleMatrix".standardizePath++"/main.csmx");
+				f.close;
+			}{
+				f = File(File.getcwd++"/ChordScaleMatrix".standardizePath++"/lastfile.csmx.preferences", "w");
+				f.write(File.getcwd++"/ChordScaleMatrix".standardizePath++"/"++currentFile);
+				f.close;
+			};
 
-	// exit
-	Button(control.window, (control.width / 2) - 20@control.button.dim.y)
-	.states_([["Exit"]])
-	.action_({
-		var prefs = prefsx.value(nil);
-		datastr = filedata.value(matrix.asCompileString, chordrix.asCompileString, prefs);
+			player.stop; player.reset;
+			window.close; control.window.close; kbwin.window.close;
+			//s.volume.gui.close;
 
-		f = File(File.getcwd++"/ChordScaleMatrix".standardizePath++"/main.csmx", "w");
-		f.write(datastr);
-		f.close;
+			/*// exit dialog
+			var exitDialog = ();
+			exitDialog.width = 320;
+			exitDialog.height = 120;
 
-		if (issaved == false) {
-			f = File(File.getcwd++"/ChordScaleMatrix".standardizePath++"/lastfile.csmx.preferences", "w");
-			f.write(File.getcwd++"/ChordScaleMatrix".standardizePath++"/main.csmx");
-			f.close;
-		}{
-			f = File(File.getcwd++"/ChordScaleMatrix".standardizePath++"/lastfile.csmx.preferences", "w");
-			f.write(File.getcwd++"/ChordScaleMatrix".standardizePath++"/"++currentFile);
-			f.close;
-		};
-
-		player.stop; player.reset;
-		window.close; control.window.close; kbwin.window.close;
-		//s.volume.gui.close;
-
-		/*// exit dialog
-		var exitDialog = ();
-		exitDialog.width = 320;
-		exitDialog.height = 120;
-
-		exitDialog = Window("Chord Scale Matrix - Exit Dialog", Rect(
+			exitDialog = Window("Chord Scale Matrix - Exit Dialog", Rect(
 			(screen.width - exitDialog.width) / 2,
 			(screen.width - exitDialog.width) / 2,
 			exitDialog.height, exitDialog.height),
 			resizable:true, border:true
-		).front;
-		exitDialog.userCanClose_(true);
-		exitDialog.alwaysOnTop_(true);
+			).front;
+			exitDialog.userCanClose_(true);
+			exitDialog.alwaysOnTop_(true);
 
-		Button(exitDialog, (control.width / 2) - 10@control.button.dim.y)
-		.states_(["Cancel"])
-		.action_({ |v|
+			Button(exitDialog, (control.width / 2) - 10@control.button.dim.y)
+			.states_(["Cancel"])
+			.action_({ |v|
 			if(v.value == 1){
 
 			}{
 
 			}
-		});
-		Button(exitDialog, (control.width / 2) - 10@control.button.dim.y)
-		.states_(["Exit"])
-		.action_({ |v|
+			});
+			Button(exitDialog, (control.width / 2) - 10@control.button.dim.y)
+			.states_(["Exit"])
+			.action_({ |v|
 			if(v.value == 1){
 
 			}{
 
 			}
-		});*/
-	})
-	.toolTip_("Attention! On exit file will be temporary saved in \n\""++File.getcwd++"/ChordScaleMatrix".standardizePath++"/main.csmx\".");
+			});*/
+		})
+		.toolTip_("Attention! On exit file will be temporary saved in \n\""++File.getcwd++"/ChordScaleMatrix".standardizePath++"/main.csmx\".");
 
-	StaticText(control.window, control.width@10); // separator
+		StaticText(w, control.width@10); // separator
 
-	// font
-	/*StaticText(control.window, control.button.dim).string_("Font").align_(txtalign);
-	control.fonts = PopUpMenu(control.window, control.button.dim)
-	.items_(Font.availableFonts); //[Font.defaultMonoFace, Font.defaultSansFace, Font.defaultSerifFace]
-	//["Monospace"],["Sans serif"],["Serif"]
+		// status bar
+		control.statusBar = StaticText(w, (control.width - 20)@control.button.dim.y).align_(\left).string_(" ...")
+		.background_(Color.gray)
+		.stringColor_(Color.white);
 
-	StaticText(control.window, control.button.dim).string_("Size").align_(txtalign);
-	control.fontsize = PopUpMenu(control.window, control.button.dim)
-	.items_(["6","7","8","9","10","12","13","14","18","24","36","48","60","72","96"])
-	.action_({ |v|
-	/*var font;
-	font = Font(y.items[y.value].asInteger);
-	a.font_(font).refresh;*/
-	});*/
-
-	// GUI theme
-	StaticText(control.window, control.button.dim).string_("GUI theme").align_(txtalign);
-	control.chooseTheme = PopUpMenu(control.window, (control.width / 2)@control.button.dim.y)
-	.items_(["System", "Light", "Dark"])
-	.action_({ |menu|
-		QtGUI.palette = palettes.at(menu.value);
 	});
-	control.chooseTheme.valueAction_(0);
-
-	// window on top
-	/*Button(control.window, (control.width - 20)@control.button.dim.y)
-	.states_([["Windows always on top"], ["Flexible window state", Color.white, Color.grey]])
-	.action_({ |v|
-		if(v.value == 1){
-			kbwin.window.alwaysOnTop_(true);
-			control.window.alwaysOnTop_(true);
-			window.alwaysOnTop_(true);
-		}{
-			kbwin.window.alwaysOnTop_(false);
-			control.window.alwaysOnTop_(false);
-			window.alwaysOnTop_(false);
-		}
-	});*/
-	StaticText(control.window, control.button.dim).align_(txtalign).string_("Windows in front");
-	control.cbFront = CheckBox(control.window, (control.width / 2)@control.button.dim.y)
-	.action_({ |v|
-		if(v.value == true){
-			kbwin.window.alwaysOnTop_(true);
-			control.window.alwaysOnTop_(true);
-			window.alwaysOnTop_(true);
-		}{
-			kbwin.window.alwaysOnTop_(false);
-			control.window.alwaysOnTop_(false);
-			window.alwaysOnTop_(false);
-		}
-	});
-
-	// status bar
-	control.statusBar = StaticText(control.window, (control.width - 20)@control.button.dim.y).align_(\left).string_(" ...")
-	.background_(Color.gray)
-	.stringColor_(Color.white);
 
 	lfile = File(File.getcwd++"/ChordScaleMatrix".standardizePath++"/lastfile.csmx.preferences", "r");
 	lfstr = lfile.readAllString.stripWhiteSpace;
@@ -854,37 +880,36 @@ s.waitForBoot({
 	fileprefs.value(lfstr);
 	control.statusBar.string(" "++lfstr++" loaded");
 
-
 	// synths
 
 	// SINOSC
 	/*SynthDef(synthList[0], { |out, freq=440, pan, amp=0.1, sustain=0.25|
-		var sig = SinOsc.ar(freq, mul: 0.1);
-		Out.ar(out, sig);
+	var sig = SinOsc.ar(freq, mul: 0.1);
+	Out.ar(out, sig);
 	}).add;
 
 	// TRIANGLE WAVE
 	SynthDef(synthList[1], { |out, freq=440, pan, amp=0.1, sustain=0.25|
-		var sig = LFTri.ar(freq, mul: 0.1);
-		Out.ar(out, sig);
+	var sig = LFTri.ar(freq, mul: 0.1);
+	Out.ar(out, sig);
 	}).add;
 
 	// SAWTOOTH WAVE
 	SynthDef(synthList[2], { |out, freq=440, pan, amp=0.1, sustain=0.25|
-		var sig = LFSaw.ar(freq, mul: 0.05);
-		Out.ar(out, sig);
+	var sig = LFSaw.ar(freq, mul: 0.05);
+	Out.ar(out, sig);
 	}).add;
 
 	// SQUARE WAVE
 	SynthDef(synthList[3], { |out, freq=440, pan, amp=0.1, sustain=0.25|
-		var sig = LFPulse.ar(freq, mul: 0.05);
-		Out.ar(out, sig);
+	var sig = LFPulse.ar(freq, mul: 0.05);
+	Out.ar(out, sig);
 	}).add;
 
 	// PULSE WAVE
 	SynthDef(synthList[4], { |out, freq=440, pan, amp=0.1, sustain=0.25|
-		var sig = LFPulse.ar(freq, width: 0.2, mul: 0.05);
-		Out.ar(out, sig);
+	var sig = LFPulse.ar(freq, width: 0.2, mul: 0.05);
+	Out.ar(out, sig);
 	}).add;*/
 
 	// ping
@@ -897,10 +922,10 @@ s.waitForBoot({
 
 	// sinus
 	/*SynthDef(synthList[X], { |out, freq=440, pan, amp=0.1, sustain=0.25|
-		var snd = SinOsc.ar(freq);
-		snd = snd * EnvGen.ar(Env.sine(sustain), doneAction:2);
-		snd = Pan2.ar(snd, pan);
-		OffsetOut.ar(out, snd*amp);
+	var snd = SinOsc.ar(freq);
+	snd = snd * EnvGen.ar(Env.sine(sustain), doneAction:2);
+	snd = Pan2.ar(snd, pan);
+	OffsetOut.ar(out, snd*amp);
 	}).add;*/
 
 	// glassharp
@@ -914,7 +939,7 @@ s.waitForBoot({
 	// piano
 	//TODO: Check if I have to translate midinote to freq
 	/*SynthDef(synthList[X], {|midin, out=0|
-		Out.ar(out, MdaPiano.ar(midin.midicps, decay:0.125)); // from sc3-plugins
+	Out.ar(out, MdaPiano.ar(midin.midicps, decay:0.125)); // from sc3-plugins
 	}).add;*/
 
 	// hackbrett
@@ -943,9 +968,9 @@ s.waitForBoot({
 
 	// sine
 	/*SynthDef(synthList[X], { arg out=100, pan=0, trig=0.0, freq=500, amp=1, cutoff=10000, rezz=1;
-		freq = Lag.kr(freq,0.1);
-		Out.ar(out,Pan2.ar(RLPF.ar(Saw.ar([freq,freq*2],amp),cutoff,rezz),
-			pan));
+	freq = Lag.kr(freq,0.1);
+	Out.ar(out,Pan2.ar(RLPF.ar(Saw.ar([freq,freq*2],amp),cutoff,rezz),
+	pan));
 	}).add;*/
 
 	// saw
@@ -958,24 +983,24 @@ s.waitForBoot({
 
 	// envsaw
 	/*SynthDef(synthList[X], { arg out, freq = 1000, gate = 1, pan = 0, cut = 4000, rez = 0.8, amp = 1;
-		Out.ar(out,
-			Pan2.ar(
-				RLPF.ar(
-					Pulse.ar(freq,0.05),
-					cut, rez),
-				pan) * EnvGen.kr(Env.linen(0.01, 1, 0.3), gate, amp, doneAction:2);
-		)
+	Out.ar(out,
+	Pan2.ar(
+	RLPF.ar(
+	Pulse.ar(freq,0.05),
+	cut, rez),
+	pan) * EnvGen.kr(Env.linen(0.01, 1, 0.3), gate, amp, doneAction:2);
+	)
 	}).add;*/
 
 	// patter
 	/*SynthDef(synthList[X], { arg out, freq = 1000, gate = 1, pan = 0, cut = 4000, rez = 0.8, amp = 1;
-		Out.ar(out,
-			Pan2.ar(
-				RLPF.ar(
-					SinOsc.ar(freq,0.05),
-					cut, rez),
-				pan) * EnvGen.kr(Env.linen(0.01, 1, 0.3), gate, amp, doneAction:2);
-		)
+	Out.ar(out,
+	Pan2.ar(
+	RLPF.ar(
+	SinOsc.ar(freq,0.05),
+	cut, rez),
+	pan) * EnvGen.kr(Env.linen(0.01, 1, 0.3), gate, amp, doneAction:2);
+	)
 	}).add;*/
 
 	// bass(_Ex)
@@ -992,9 +1017,9 @@ s.waitForBoot({
 
 	// smooth
 	/*SynthDef(synthList[X], { |freq = 440, sustain = 1, amp = 0.5|
-		var sig;
-		sig = SinOsc.ar(freq, 0, amp) * EnvGen.kr(Env.linen(0.05, sustain, 0.1), doneAction: 2);
-		Out.ar(0, sig ! 2)
+	var sig;
+	sig = SinOsc.ar(freq, 0, amp) * EnvGen.kr(Env.linen(0.05, sustain, 0.1), doneAction: 2);
+	Out.ar(0, sig ! 2)
 	}).add;*/
 
 	// randomglitch
@@ -1009,19 +1034,19 @@ s.waitForBoot({
 
 	// peep
 	/*SynthDef(synthList[X],{|freq=100|
-		var snd = SinOsc.ar(freq);
-		snd = snd * EnvGen.ar(Env.perc(0.001,0.25), doneAction:2);
-		Out.ar(0, snd ! 2);
+	var snd = SinOsc.ar(freq);
+	snd = snd * EnvGen.ar(Env.perc(0.001,0.25), doneAction:2);
+	Out.ar(0, snd ! 2);
 	}).add;*/
 
 	// rstp
 	/*SynthDef(synthList[X], {
-		var sig = Pan2.ar(
-			PMOsc.ar(80.exprand(10000), 1.exprand(200), 1.exprand(20)),
-			-1.0.rand2,
-			EnvGen.kr(Env(Array.rand(4, 0, 0.1.rrand(0.5)).add(0), Array.rand(3, 0.1, 0.3).add(0.1), -5.rrand(5)), doneAction: 2)
-		);
-		Out.ar(0, sig);
+	var sig = Pan2.ar(
+	PMOsc.ar(80.exprand(10000), 1.exprand(200), 1.exprand(20)),
+	-1.0.rand2,
+	EnvGen.kr(Env(Array.rand(4, 0, 0.1.rrand(0.5)).add(0), Array.rand(3, 0.1, 0.3).add(0.1), -5.rrand(5)), doneAction: 2)
+	);
+	Out.ar(0, sig);
 	}).add;*/
 });
 )
