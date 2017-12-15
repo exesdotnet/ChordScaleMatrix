@@ -16,4 +16,16 @@ Platform.defaultTempDir;*/
 
 Platform.userExtensionDir.postln;
 Platform.userExtensionDir.openOS;
+
+
+Quarks.install("https://github.com/jmuxfeldt/TabbedView2");
+Quarks.install("https://github.com/jmuxfeldt/TabbedView2_QT");
+
+Quarks.gui;
+
+MethodOverride.printAll;
+
+//Help.gui;
+
+//Object.browse;
 )
