@@ -1,11 +1,7 @@
 (
 /*
 https://github.com/exesdotnet/ChordScaleMatrix/
-<<<<<<< HEAD
 ChordScaleMatrix 0.91 beta
-=======
-ChordScaleMatrix 0.90 beta
->>>>>>> 95f62d7cc3509ed208b1075ee07aa1356bac12bb
 */
 
 //Server.default = s = Server.internal;
