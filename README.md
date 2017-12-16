@@ -35,6 +35,18 @@ Requirements
 
 Using the zipped release file
 
+[Same procedure like in Windows](https://github.com/exesdotnet/ChordScaleMatrix/blob/master/README.md#linux)
+
+### MacOS
+
+Using the zipped release file
+
+[Same procedure like in Windows](https://github.com/exesdotnet/ChordScaleMatrix/blob/master/README.md#linux)
+
+### Linux
+
+Using the zipped release file
+
 * In case you have not already install [SuperCollider](http://supercollider.sourceforge.net/downloads/) and SuperCollider plugins.
 * Download latest release [ChordScaleMatrix](https://github.com/exesdotnet/ChordScaleMatrix/releases) 0.91 beta or later!
 Alternative the [zipped Git repository](https://github.com/exesdotnet/ChordScaleMatrix/archive/master.zip)
@@ -48,18 +60,6 @@ Alternative the [zipped Git repository](https://github.com/exesdotnet/ChordScale
 * Open in SuperCollider IDE the file `ChordScaleMatrix\ChordScaleMatrix.scd`!
 * Click between the parenthesis!
 * Press `Strg + Return` to run the SuperCollider document!
-
-### MacOS
-
-Using the zipped release file
-
-[Same procedure like in Windows](https://github.com/exesdotnet/ChordScaleMatrix/blob/master/README.md#windows)
-
-### Linux
-
-Using the zipped release file
-
-[Same procedure like in Windows](https://github.com/exesdotnet/ChordScaleMatrix/blob/master/README.md#windows)
 
 Install via script by typing!
 
