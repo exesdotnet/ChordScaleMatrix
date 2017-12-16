@@ -35,13 +35,13 @@ Requirements
 
 Using the zipped release file
 
-[Same procedure like in Windows](https://github.com/exesdotnet/ChordScaleMatrix/blob/master/README.md#linux)
+[Same procedure like Linux](https://github.com/exesdotnet/ChordScaleMatrix/blob/master/README.md#linux)
 
 ### MacOS
 
 Using the zipped release file
 
-[Same procedure like in Windows](https://github.com/exesdotnet/ChordScaleMatrix/blob/master/README.md#linux)
+[Same procedure like Linux](https://github.com/exesdotnet/ChordScaleMatrix/blob/master/README.md#linux)
 
 ### Linux
 
