@@ -48,7 +48,7 @@ Using the zipped release file
 Using the zipped release file
 
 * In case you have not already install [SuperCollider](http://supercollider.sourceforge.net/downloads/) and SuperCollider plugins.
-* Download latest release [ChordScaleMatrix](https://github.com/exesdotnet/ChordScaleMatrix/releases) 0.91 beta or later!
+* Download latest release [ChordScaleMatrix](https://github.com/exesdotnet/ChordScaleMatrix/releases)!
 Alternative the [zipped Git repository](https://github.com/exesdotnet/ChordScaleMatrix/archive/master.zip)
 * Download the [ChordSymbol](https://github.com/triss/ChordSymbol/archive/master.zip) extension!
 * Download the [modfm-synth](https://github.com/filib/modfm-synth/archive/master.zip) MIDI keyboard extension!
@@ -59,7 +59,7 @@ Alternative the [zipped Git repository](https://github.com/exesdotnet/ChordScale
 * In the menu `Language` click `Recompile Class Library`!
 * Open in SuperCollider IDE the file `ChordScaleMatrix\ChordScaleMatrix.scd`!
 * Click between the parenthesis!
-* Press `Strg + Return` to run the SuperCollider document!
+* Press `Strg + Return` to run the SuperCollider script!
 
 Install via script by typing!
 
@@ -117,6 +117,8 @@ If you use the code for some project, please [let me know](mailto:thilo[at]exes.
 
 TO DO
 -----
+* GUI
+    * Correct positioning
 
 * Mode
     * Synchronize octaves in `Single note mode` and `Chord mode`
@@ -125,18 +127,27 @@ TO DO
 * Synthesizers
     * Debug and optimize the synths
     
-* Song templates
-    * Creating new song templates especially for chord progressions
-
 * Preferences
     * Fix up checkbox value of `Windows in front`
     
 * Standalone app
     * Preparing the files for a standalone application
-
+    
+* In general
+    Adapt code for SuperCollider version 3.9
 
 List of Changes
 ---------------
+
+Version 0.92
+
+* New features:
+    * New song templates for chord progressions
+
+* Issue fixes:
+    * Rearranged GUI components
+    * Platform conditions
+    * Fix up file savings
 
 Version 0.91
 
