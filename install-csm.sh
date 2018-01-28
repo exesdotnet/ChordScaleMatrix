@@ -22,33 +22,33 @@ if [ "$1" = "--git" ]; then
 
 	# [ ChordScaleMatrix ]
 	git clone https://github.com/exesdotnet/ChordScaleMatrix.git
-	cd ChordScaleMatrix
 	
 	mv ~/Downloads/ChordScaleMatrix/* ~/ChordScaleMatrix
 
 	# Install as SuperCollider extension, ref http://doc.sccode.org/Guides/UsingExtensions.html
 
-	# [ ChordSymbol ]
-	git clone https://github.com/triss/ChordSymbol.git
-	cd ChordSymbol
-
 	# On Linux
 	mkdir -p ~/.local/share/SuperCollider/Extensions || true
-	ln -s `pwd` ~/.local/share/SuperCollider/Extensions/ChordSymbol
 	# On Mac OSX
 	#mkdir -p "$HOME/Library/Application Support/SuperCollider/Extensions" || true
+
+	# [ ChordSymbol ]
+	git clone https://github.com/triss/ChordSymbol.git
+	cd ~/Downloads/ChordSymbol
+	# On Linux
+	ln -s `pwd` ~/.local/share/SuperCollider/Extensions/ChordSymbol
+	# On Mac OSX
 	#ln -s `pwd` "$HOME/Library/Application Support/SuperCollider/Extensions/ChordSymbol"
 
 	# [ modfm-synth ]
 	git clone https://github.com/filib/modfm-synth.git
-	cd modfm-synth
-
+	cd ~/Downloads/modfm-synth
 	# On Linux
-	mkdir -p ~/.local/share/SuperCollider/Extensions || true
 	ln -s `pwd` ~/.local/share/SuperCollider/Extensions/modfm-synth
 	# On Mac OSX
-	#mkdir -p "$HOME/Library/Application Support/SuperCollider/Extensions" || true
 	#ln -s `pwd` "$HOME/Library/Application Support/SuperCollider/Extensions/modfm-synth"
+
+	mv synthesizer.sc synthesizer.sc.bak
 
 	cd ~
 
@@ -61,7 +61,7 @@ else
 	wget https://github.com/filib/modfm-synth/archive/master.zip -O ~/Downloads/modfm-synth.zip
 	unzip ~/Downloads/modfm-synth.zip -d ~/Downloads/modfm-synth
 	mv ~/Downloads/modfm-synth ~/.local/share/SuperCollider/Extensions
-	#rm -f ~/.local/share/SuperCollider/Extensions/
+	mv ~/.local/share/SuperCollider/Extensions/synthesizer.sc ~/.local/share/SuperCollider/Extensions/synthesizer.sc.bak
 
 	#(firefox https://github.com/exesdotnet/ChordScaleMatrix/ &> /dev/null &)
 	wget https://github.com/exesdotnet/ChordScaleMatrix/archive/master.zip -O ~/Downloads/ChordScaleMatrix.zip
@@ -89,7 +89,7 @@ MimeType=application/x-chordscalematrix
 	echo "Do you like to start ChordScaleMatrix now? [ y | n ]"
 	read yorn
 	if [ "$yorn" = "y" ]; then
-		~/ChordScaleMatrix/run-csm.sh
+		(/opt/ChordScaleMatrix/run-csm.sh &> /dev/null &)
 	fi
 
 fi

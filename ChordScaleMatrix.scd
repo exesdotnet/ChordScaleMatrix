@@ -1123,7 +1123,7 @@ s.waitForBoot({
 
 // debugging
 (
-thisProcess.platform.postln;
+/*thisProcess.platform.postln;
 thisProcess.openPorts.postln;
 thisProcess.argv.postln;
 thisProcess.pid.postln;
@@ -1132,7 +1132,7 @@ Main.versionAtLeast(3, 6).postln;
 Main.versionAtMost(3, 6).postln;
 Main.scVersionMajor.postln;
 Main.scVersionMinor.postln;
-Main.scVersionPostfix.postln;
+Main.scVersionPostfix.postln;*/
 
 //s.volume.gui;
 /*v = s.volume;
