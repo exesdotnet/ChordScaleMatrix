@@ -134,7 +134,7 @@ TO DO
     * Preparing the files for a standalone application
     
 * In general
-    Adapt code for SuperCollider version 3.9
+    * Adapt code for SuperCollider version 3.9
 
 List of Changes
 ---------------
