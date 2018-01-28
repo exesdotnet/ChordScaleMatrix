@@ -637,7 +637,7 @@ s.waitForBoot({
 				"'Save file as' canceled".postln;
 			});
 		});
-
+//
 		// save
 		saveButton = Button(w, (control.width / 2) - 10@control.button.dim.y)
 		.states_([["Save file"]])
