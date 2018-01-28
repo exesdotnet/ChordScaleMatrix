@@ -1,12 +1,19 @@
 (
 /*
 https://github.com/exesdotnet/ChordScaleMatrix/
-ChordScaleMatrix 0.91 beta
+ChordScaleMatrix 0.92 beta
 */
 
 //Server.default = s = Server.internal;
 s.serverRunning.not.if({ s.boot });
-//postf("\tDEBUG: %\n", "----------------");
+Buffer.freeAll;
+postf("DEBUG:\t%\n", "----------------");
+if(Main.versionAtLeast(3, 6) != true) {
+	postf("%\n", "You need at least version 3.6.6.");
+};
+if(Main.versionAtMost(3, 9) != true) {
+	postf("%\n", "Some methods do not work at the moment with version higher than 3.6.6.");
+};
 
 s.waitForBoot({
 	var screen, layout, window, t, kbwin, decorator, button, matrix, buttonMatrix, leds, chordsel;
@@ -27,11 +34,22 @@ s.waitForBoot({
 	var ipos, midistr, midistrc, mstrc, degr;
 	var aPrefStrs, aPrefStr, lfile, lfstr;
 	var pan;
+	var rootpath, thefile, splitstr;
 
 	GUI.qt;
 	QtGUI.palette = QPalette.system;
 
-	File.mkdir(File.getcwd++"/ChordScaleMatrix".standardizePath);
+	Platform.case(
+		\osx, { splitstr = $/ },
+		\linux, { splitstr = $/ },
+		\windows, { splitstr = $\\ }
+	);
+
+	if(thisProcess.platform == "a WindowsPlatform") {
+		File.mkdir(Platform.userHomeDir++"\\Documents\\ChordScaleMatrix");
+	}{
+		File.mkdir(File.getcwd++"/ChordScaleMatrix".standardizePath);
+	};
 
 	prefsx = { arg prfs;
 		var fr;
@@ -89,7 +107,9 @@ s.waitForBoot({
 			control.chooseMode.valueAction_(aPrefStr[14]);
 			control.chooseTheme.valueAction_(aPrefStr[15]);
 			//control.cbFront.valueAction_(aPrefStr[16].asCompileString.interpret);
-			control.statusBar.string = " Last edited on "++aPrefStr[17];
+
+			thefile = fileppath.split(splitstr);
+			control.statusBar.string = " File: "++thefile.at(thefile.size - 1)++"\n Last edited on "++aPrefStr[17];
 
 			aPrefStr[0].asCompileString.postln;
 			aPrefStr[0].interpret.colsDo{ |col, pos|
@@ -136,14 +156,24 @@ s.waitForBoot({
 	issaved = false;
 	gMode = false;
 	pan = -1.0.rand2;
+	if(thisProcess.platform == "a WindowsPlatform") {
+		rootpath = Platform.userHomeDir++"\\Documents\\ChordScaleMatrix"++"\\";
+	}{
+		rootpath = File.getcwd++"/ChordScaleMatrix".standardizePath++"/";
+	};
 
 	// layout stuff
 	layout.width = numCols * pointSize;
 	layout.height = numRows * pointSize;
-	layout.centerPoint = ((screen.width/2) - (layout.width/2)@(screen.height/2) - (layout.height/2));
+	//layout.centerPoint = ((screen.width / 2) - (layout.width / 2)@(screen.height / 2) - (layout.height / 2));
 	layout.button = ((layout.width / numCols)@(layout.height / numRows));
-	layout.center = Rect((screen.width - layout.width) / 2, screen.height,
+	layout.center = Rect((screen.width - layout.width) / 2, screen.height - layout.height,
 		layout.width, layout.height + (layout.button.y + 10) + (layout.button.y + 10));
+
+	/*postf("% % % %\n", screen.width, screen.height, layout.width, layout.height);
+	postf("% % % %\n", (screen.width - layout.width) / 2, screen.height - layout.height, layout.width, layout.height + (layout.button.y + 10) + (layout.button.y + 10));
+	layout.center.postcs;
+	layout.button.postcs;*/
 
 	// matrix window
 	window = Window("Chord Scale Matrix - Notation", layout.center, resizable:false, border:true).front;
@@ -222,9 +252,8 @@ s.waitForBoot({
 	// MIDI piano keyboard
 	kbwin = ();
 	kbwin.window = Window("Chord Scale Matrix - Piano Keyboard",
-		Rect((screen.width - layout.width) / 2,
-			((screen.height - layout.height) / 2) + 24,
-			layout.width, 144)
+		Rect((screen.width - layout.width) / 2, ((screen.height - layout.height) / 2) + 48, layout.width, 144),
+		resizable:false, border:true
 	).front;
 	kbwin.window.userCanClose_(false);
 
@@ -307,7 +336,7 @@ s.waitForBoot({
 				//if (chordstr == "1") { degr = ipos; }{ degr = mstrc; };
 
 				if(item != 0) {
-					postf("% % %", ipos, degr, degr.midinote);
+					//postf("% % %", ipos, degr, degr.midinote);
 					//postf("% % % ", col, control.chooseChord.items[chordrix.at(0, col).value], chordrix.at(0, col).value);
 					//midistr.postln();
 					//midistrc.asCompileString.postln;
@@ -327,7 +356,7 @@ s.waitForBoot({
 						(type: \midi, midiout: midiDevice, scale: scale, amp: amp, sustain: sustain, octave: octave, root: root, ctranspose: transp, degree: degr).play;
 					};
 				};
-			}; postf("\n----\n", "");
+			}; //postf("\n----\n", "");
 
 			// LED func
 			if(col != 0){
@@ -352,8 +381,10 @@ s.waitForBoot({
 	control.width = (screen.width - layout.width) / 2;
 	control.height = layout.height + (layout.button.y + 10) + (layout.button.y + 10);
 
-	control.window = Window("Chord Scale Matrix - Control", Rect(0, (screen.height - control.height - 22),
-		control.width, control.height),
+	//postf("% %\n", control.width, control.height);
+
+	control.window = Window("Chord Scale Matrix - Control",
+		Rect(0, (screen.height - control.height - 22), control.width, control.height),
 		resizable:false, border:true
 	).front;
 	control.window.userCanClose_(false);
@@ -441,22 +472,32 @@ s.waitForBoot({
 
 		// scale
 		StaticText(w, control.button.dim).align_(txtalign).string_("Scale");
-		control.chooseScale = PopUpMenu(w, (control.width / 2)@control.button.dim.y)
-		.items_(ScaleInfo.scales.keys.asArray.sort)
-		.action_({ |menu|
+		control.chooseScale = PopUpMenu(w, (control.width / 2)@control.button.dim.y);
+		if(Main.versionAtLeast(3, 8)) {
+			control.chooseScale.items_(Scale.names.asArray.sort);
+		}{
+			control.chooseScale.items_(ScaleInfo.scales.keys.asArray.sort);
+		};
+		control.chooseScale.action_({ |menu|
 			scale = ScaleInfo.at(menu.item);
 		});
-		//control.chooseScale.valueAction_(0);
 		control.chooseScale.valueAction_(11); // chromatic
 
 		// tuning
 		StaticText(w, control.button.dim).align_(txtalign).string_("Tuning");
-		control.chooseTuning = PopUpMenu(w, (control.width / 2)@control.button.dim.y)
-		.items_(TuningInfo.tunings.keys.asArray.sort)
-		.action_({ |menu|
-			scale.tuning_(menu.item);
+		control.chooseTuning = PopUpMenu(w, (control.width / 2)@control.button.dim.y);
+		if(Main.versionAtLeast(3, 8)) {
+			control.chooseTuning.items_(Tuning.names.asArray.sort);
+		}{
+			control.chooseTuning.items_(TuningInfo.tunings.keys.asArray.sort);
+		};
+		control.chooseTuning.action_({ |menu|
+			if(Main.versionAtLeast(3, 8)) {
+				Scale.names.asArray.at(menu.value);
+			}{
+				scale.tuning_(menu.item);
+			};
 		});
-		//control.chooseTuning.valueAction_(0);
 		control.chooseTuning.valueAction_(3); // et12
 
 		StaticText(w, control.width@10); // separator
@@ -524,7 +565,6 @@ s.waitForBoot({
 
 		StaticText(w, control.width@10); // separator
 
-
 		// play / pause
 		playButton = Button(w, (control.width / 2) - 10@control.button.dim.y)
 		.states_([["Play"], ["Pause", Color.black, Color.green]])
@@ -548,6 +588,146 @@ s.waitForBoot({
 			leds.do{ |led| led.value_(0) };
 		});
 
+		StaticText(w, control.width@10); // separator
+
+		// open file
+		Button(w, (control.width / 2) - 10@control.button.dim.y)
+		.states_([["Open file"]])
+		.action_({ |v|
+			Dialog.openPanel({ arg path;
+				postf("% was opened.\n", path);
+				if (File.existsCaseSensitive(path)) {
+				//if (File.exists(path)) {
+					f = File(path, "r"); f.isOpen;
+					t = SemiColonFileReader(f);
+					t.read.postcs;
+					f.close;
+
+					fileprefs.value(path);
+					currentFile = path;
+					saveButton.enabled = true;
+					//issaved = false;
+				}{
+					"File does not exist.".postln;
+				};
+			},{
+				"'Open file' cancelled".postln;
+			}, multipleSelection: false);
+		});
+
+		// save as
+		Button(w, (control.width / 2) - 20@control.button.dim.y)
+		.states_([["Save file as"]])
+		.action_({ |v|
+			Dialog.savePanel({ arg path;
+				var prefs = prefsx.value(nil);
+				datastr = filedata.value(matrix.asCompileString, chordrix.asCompileString, prefs);
+
+				f = File(path, "w");
+				f.write(datastr);
+				f.close;
+
+				postf("File was created in %.\n", path);
+				thefile = path.split(splitstr);
+				control.statusBar.string = " File: "++thefile.at(thefile.size - 1)++"\n Saved on "++Date.getDate.format("%Y/%m/%d %H:%M:%S");
+				currentFile = path;
+				saveButton.enabled = true;
+				issaved = true;
+			},{
+				"'Save file as' canceled".postln;
+			});
+		});
+
+		// save
+		saveButton = Button(w, (control.width / 2) - 10@control.button.dim.y)
+		.states_([["Save file"]])
+		.action_({
+			if(currentFile.asString != "", {
+				var prefs = prefsx.value(nil);
+				datastr = filedata.value(matrix.asCompileString, chordrix.asCompileString, prefs);
+
+				f = File(currentFile, "w");
+				f.write(datastr);
+				f.close;
+
+				postf("File was created in %.\n", currentFile);
+				thefile = currentFile.split(splitstr);
+				control.statusBar.string = " File: "++thefile.at(thefile.size - 1)++"\n Saved on "++Date.getDate.format("%Y/%m/%d %H:%M:%S");
+				issaved = true;
+			},{
+				"No file was specified.".postln;
+			});
+		});
+		if(currentFile.asString == "", {
+			saveButton.enabled = false;
+		});
+
+		// exit
+		Button(w, (control.width / 2) - 20@control.button.dim.y)
+		.states_([["Exit"]])
+		.action_({
+			var prefs = prefsx.value(nil);
+			datastr = filedata.value(matrix.asCompileString, chordrix.asCompileString, prefs);
+
+			f = File(rootpath++"main.csmx", "w");
+			f.write(datastr);
+			f.close;
+
+			if (issaved == false) {
+				f = File(rootpath++"lastfile.csmx.preferences", "w");
+				f.write(rootpath++"main.csmx");
+				f.close;
+			}{
+				f = File(rootpath++"lastfile.csmx.preferences", "w");
+				f.write(currentFile);
+				f.close;
+			};
+
+			player.stop; player.reset;
+			window.close; control.window.close; kbwin.window.close;
+			//s.volume.gui.close;
+
+			/*// exit dialog
+			var exitDialog = ();
+			exitDialog.width = 320;
+			exitDialog.height = 120;
+
+			exitDialog = Window("Chord Scale Matrix - Exit Dialog", Rect(
+			(screen.width - exitDialog.width) / 2,
+			(screen.width - exitDialog.width) / 2,
+			exitDialog.height, exitDialog.height),
+			resizable:true, border:true
+			).front;
+			exitDialog.userCanClose_(true);
+			exitDialog.alwaysOnTop_(true);
+
+			Button(exitDialog, (control.width / 2) - 10@control.button.dim.y)
+			.states_(["Cancel"])
+			.action_({ |v|
+			if(v.value == 1){
+
+			}{
+
+			}
+			});
+			Button(exitDialog, (control.width / 2) - 10@control.button.dim.y)
+			.states_(["Exit"])
+			.action_({ |v|
+			if(v.value == 1){
+
+			}{
+
+			}
+			});*/
+		})
+		.toolTip_("Attention! On exit file will be temporary saved in \n\""++File.getcwd++"/ChordScaleMatrix".standardizePath++"/main.csmx\".");
+
+		StaticText(w, control.width@10); // separator
+
+		// status bar
+		control.statusBar = StaticText(w, (control.width - 20)@(control.button.dim.y * 2)).align_(\left).string_(" ...\n ")
+		.background_(Color.white)
+		.stringColor_(Color.black);
 	});
 
 	t.add("Synth / MIDI").flow({|w|
@@ -669,9 +849,6 @@ s.waitForBoot({
 		.action_({ |menu|
 			midiChannel = menu.value;
 		});
-
-		StaticText(w, control.width@10); // separator
-
 	});
 
 	t.add("Preferences").flow({|w|
@@ -729,156 +906,49 @@ s.waitForBoot({
 				window.alwaysOnTop_(false);
 			}
 		});
-	});
-
-	t.add("File").flow({|w|
 
 		StaticText(w, control.width@10); // separator
 
-		// open file
-		Button(w, (control.width / 2) - 10@control.button.dim.y)
-		.states_([["Open file"]])
-		.action_({ |v|
-			Dialog.openPanel({ arg path;
-				postf("% was opened.\n", path);
-				if (File.existsCaseSensitive(path)) {
-					f = File(path, "r"); f.isOpen;
-					t = SemiColonFileReader(f);
-					t.read.postcs;
-					f.close;
+		// reset
+		StaticText(w, control.button.dim).align_(txtalign).string_("Configuration");
+		Button(w, (control.width / 2)@control.button.dim.y)
+		.states_([["Reset"]])
+		.action_({
+			control.chooseChord.valueAction_(0);
+			control.chooseChord.enabled = false;
+			keyb.clear;
 
-					fileprefs.value(path);
-					control.statusBar.string(" "++path++" loaded");
-				}{
-					"File does not exist.".postln;
+			control.chooseMode.valueAction_(0);
+			control.chooseScale.valueAction_(11); // chromatic
+			control.chooseTuning.valueAction_(3); // et12
+
+			buttonMatrix.colsDo{ |col, pos|
+				col.do{ |item, i|
+					buttonMatrix.at(i, pos).valueAction_(0);
 				}
-
-				},{
-					"'Open file' cancelled".postln;
-			}, multipleSelection: false);
-		});
-
-		// save as
-		Button(w, (control.width / 2) - 20@control.button.dim.y)
-		.states_([["Save file as"]])
-		.action_({ |v|
-			Dialog.savePanel({ arg path;
-				var prefs = prefsx.value(nil);
-				datastr = filedata.value(matrix.asCompileString, chordrix.asCompileString, prefs);
-
-				//if (File.existsCaseSensitive(path)) {
-				f = File(path, "w");
-				f.write(datastr);
-				f.close;
-				//}{
-				//	"File does not exist.".postln;
-				//}
-				postf("File was created in %.\n", path);
-				currentFile = path;
-				saveButton.enabled = true;
-
-				issaved = true;
-				},{
-					"'Save file as' canceled".postln;
-			});
-		});
-
-		// save
-		saveButton = Button(w, (control.width / 2) - 10@control.button.dim.y)
-		.states_([["Save file"]])
-		.action_({
-			if(currentFile.asString != "", {
-				var prefs = prefsx.value(nil);
-				datastr = filedata.value(matrix.asCompileString, chordrix.asCompileString, prefs);
-
-				f = File(currentFile, "w");
-				f.write(datastr);
-				f.close;
-				postf("File was created in %.\n", currentFile);
-
-				issaved = true;
-				},{
-					"No file was specified.".postln;
-			});
-		});
-		if(currentFile.asString == "", {
-			saveButton.enabled = false;
-		});
-
-		// exit
-		Button(w, (control.width / 2) - 20@control.button.dim.y)
-		.states_([["Exit"]])
-		.action_({
-			var prefs = prefsx.value(nil);
-			datastr = filedata.value(matrix.asCompileString, chordrix.asCompileString, prefs);
-
-			f = File(File.getcwd++"/ChordScaleMatrix".standardizePath++"/main.csmx", "w");
-			f.write(datastr);
-			f.close;
-
-			if (issaved == false) {
-				f = File(File.getcwd++"/ChordScaleMatrix".standardizePath++"/lastfile.csmx.preferences", "w");
-				f.write(File.getcwd++"/ChordScaleMatrix".standardizePath++"/main.csmx");
-				f.close;
-			}{
-				f = File(File.getcwd++"/ChordScaleMatrix".standardizePath++"/lastfile.csmx.preferences", "w");
-				f.write(File.getcwd++"/ChordScaleMatrix".standardizePath++"/"++currentFile);
-				f.close;
+			};
+			chordrix.colsDo{ |col, pos|
+				col.do{ |item, i|
+					postf("% %\n", item, i);
+					chordrix.put(0, pos, 0);
+				}
 			};
 
-			player.stop; player.reset;
-			window.close; control.window.close; kbwin.window.close;
-			//s.volume.gui.close;
-
-			/*// exit dialog
-			var exitDialog = ();
-			exitDialog.width = 320;
-			exitDialog.height = 120;
-
-			exitDialog = Window("Chord Scale Matrix - Exit Dialog", Rect(
-			(screen.width - exitDialog.width) / 2,
-			(screen.width - exitDialog.width) / 2,
-			exitDialog.height, exitDialog.height),
-			resizable:true, border:true
-			).front;
-			exitDialog.userCanClose_(true);
-			exitDialog.alwaysOnTop_(true);
-
-			Button(exitDialog, (control.width / 2) - 10@control.button.dim.y)
-			.states_(["Cancel"])
-			.action_({ |v|
-			if(v.value == 1){
-
-			}{
-
-			}
-			});
-			Button(exitDialog, (control.width / 2) - 10@control.button.dim.y)
-			.states_(["Exit"])
-			.action_({ |v|
-			if(v.value == 1){
-
-			}{
-
-			}
-			});*/
-		})
-		.toolTip_("Attention! On exit file will be temporary saved in \n\""++File.getcwd++"/ChordScaleMatrix".standardizePath++"/main.csmx\".");
-
-		StaticText(w, control.width@10); // separator
-
-		// status bar
-		control.statusBar = StaticText(w, (control.width - 20)@control.button.dim.y).align_(\left).string_(" ...")
-		.background_(Color.gray)
-		.stringColor_(Color.white);
-
+			control.rootSlide.valueAction_(0);
+			control.octSlide.valueAction_(4);
+			control.transpSlide.valueAction_(0);
+			control.tempoSlide.valueAction_(60);
+			control.chooseSynth.valueAction_(0);
+			control.durSlide.valueAction_(0.8);
+			control.ampSlide.valueAction_(0.2);
+		});
 	});
 
-	lfile = File(File.getcwd++"/ChordScaleMatrix".standardizePath++"/lastfile.csmx.preferences", "r");
+	lfile = File(rootpath++"lastfile.csmx.preferences", "r");
 	lfstr = lfile.readAllString.stripWhiteSpace;
 	lfile.close;
+	postf("%\n", lfstr);
 	fileprefs.value(lfstr);
-	control.statusBar.string(" "++lfstr++" loaded");
 
 	// synths
 
@@ -1053,6 +1123,17 @@ s.waitForBoot({
 
 // debugging
 (
+thisProcess.platform.postln;
+thisProcess.openPorts.postln;
+thisProcess.argv.postln;
+thisProcess.pid.postln;
+Main.version.postln;
+Main.versionAtLeast(3, 6).postln;
+Main.versionAtMost(3, 6).postln;
+Main.scVersionMajor.postln;
+Main.scVersionMinor.postln;
+Main.scVersionPostfix.postln;
+
 //s.volume.gui;
 /*v = s.volume;
 v.min;
@@ -1068,7 +1149,7 @@ v.gui;*/
 //Tuning.directory;
 
 // Exports a CSV list for debugging
-var cnote = "C";
+/*var cnote = "C";
 var ns = ""; var nsn = "";
 var strdata = "C note;Notes;Scale;Degrees;MIDI notes\n";
 ChordSymbol.shapes.keys.asArray.sort.do{ arg item;
@@ -1081,7 +1162,7 @@ ChordSymbol.shapes.keys.asArray.sort.do{ arg item;
 		strdata = strdata++""++ns.interpret.midinote++"\n";
 	};
 };
-f = File(File.getcwd++"/ChordScaleMatrix".standardizePath++"/CChordsScalesDegreesMidi.csv", "w");
+f = File(rootpath++"/CChordsScalesDegreesMidi.csv", "w");
 f.write(strdata);
-f.close;
+f.close;*/
 )

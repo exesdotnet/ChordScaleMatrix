@@ -8,6 +8,12 @@ if [ $# -ge 2 ]; then
 	exit 1
 fi
 
+sudo apt-get install -y subversion # Is required for SuperCollider 3.6.6 Quarks download
+sudo add-apt-repository ppa:git-core/ppa # Is required for SuperCollider 3.9 Quarks download
+sudo apt-get update
+sudo apt-get install -y git
+sudo apt-get install -y supercollider supercollider-ide sc3-plugins sc3-plugins-language
+
 if [ "$1" = "--git" ]; then
 
 	if [ ! -d ~/ChordScaleMatrix ]; then mkdir ~/ChordScaleMatrix; fi
@@ -55,6 +61,7 @@ else
 	wget https://github.com/filib/modfm-synth/archive/master.zip -O ~/Downloads/modfm-synth.zip
 	unzip ~/Downloads/modfm-synth.zip -d ~/Downloads/modfm-synth
 	mv ~/Downloads/modfm-synth ~/.local/share/SuperCollider/Extensions
+	#rm -f ~/.local/share/SuperCollider/Extensions/
 
 	#(firefox https://github.com/exesdotnet/ChordScaleMatrix/ &> /dev/null &)
 	wget https://github.com/exesdotnet/ChordScaleMatrix/archive/master.zip -O ~/Downloads/ChordScaleMatrix.zip
@@ -70,11 +77,12 @@ else
 Version=1.0
 Type=Application
 Name=ChordScaleMatrix
-Icon=
+Icon=application-x-executable
 Exec=/opt/ChordScaleMatrix/run-csm.sh
 Comment=Chord Scale Matrix
 Categories=Audio;AudioVideo;Music;
 Terminal=false
+MimeType=application/x-chordscalematrix
 " > ~/.local/share/applications/chordscalematrix.desktop
 
 	echo ""
