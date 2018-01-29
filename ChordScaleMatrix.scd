@@ -40,16 +40,20 @@ s.waitForBoot({
 	QtGUI.palette = QPalette.system;
 
 	Platform.case(
-		\osx, { splitstr = $/ },
-		\linux, { splitstr = $/ },
-		\windows, { splitstr = $\\ }
+		\osx, {
+			//splitstr = $/;
+			rootpath = Platform.userHomeDir++"/ChordScaleMatrix".standardizePath++"/";
+		},
+		\linux, {
+			//splitstr = $/;
+			rootpath = Platform.userHomeDir++"/ChordScaleMatrix".standardizePath++"/";
+		},
+		\windows, {
+			//splitstr = $\\;
+			rootpath = Platform.userHomeDir++"\\Documents\\ChordScaleMatrix\\".replace("\\", "/");
+		}
 	);
-
-	if(thisProcess.platform == "a WindowsPlatform") {
-		File.mkdir(Platform.userHomeDir++"\\Documents\\ChordScaleMatrix");
-	}{
-		File.mkdir(File.getcwd++"/ChordScaleMatrix".standardizePath);
-	};
+	File.mkdir(rootpath);
 
 	prefsx = { arg prfs;
 		var fr;
@@ -81,7 +85,7 @@ s.waitForBoot({
 
 	fileprefs = { arg fileppath;
 		var fpr;
-		if (File.existsCaseSensitive(fileppath)) {
+		if (File.exists(fileppath)) {
 			f = File(fileppath, "r"); f.isOpen;
 			t = SemiColonFileReader(f);
 			aPrefStrs = t.read;
@@ -108,7 +112,7 @@ s.waitForBoot({
 			control.chooseTheme.valueAction_(aPrefStr[15]);
 			//control.cbFront.valueAction_(aPrefStr[16].asCompileString.interpret);
 
-			thefile = fileppath.split(splitstr);
+			thefile = fileppath.split();
 			control.statusBar.string = " File: "++thefile.at(thefile.size - 1)++"\n Last edited on "++aPrefStr[17];
 
 			aPrefStr[0].asCompileString.postln;
@@ -156,11 +160,6 @@ s.waitForBoot({
 	issaved = false;
 	gMode = false;
 	pan = -1.0.rand2;
-	if(thisProcess.platform == "a WindowsPlatform") {
-		rootpath = Platform.userHomeDir++"\\Documents\\ChordScaleMatrix"++"\\";
-	}{
-		rootpath = File.getcwd++"/ChordScaleMatrix".standardizePath++"/";
-	};
 
 	// layout stuff
 	layout.width = numCols * pointSize;
@@ -596,8 +595,8 @@ s.waitForBoot({
 		.action_({ |v|
 			Dialog.openPanel({ arg path;
 				postf("% was opened.\n", path);
-				if (File.existsCaseSensitive(path)) {
-				//if (File.exists(path)) {
+				//if (File.existsCaseSensitive(path)) {
+				if (File.exists(path)) {
 					f = File(path, "r"); f.isOpen;
 					t = SemiColonFileReader(f);
 					t.read.postcs;
@@ -628,7 +627,7 @@ s.waitForBoot({
 				f.close;
 
 				postf("File was created in %.\n", path);
-				thefile = path.split(splitstr);
+				thefile = path.split();
 				control.statusBar.string = " File: "++thefile.at(thefile.size - 1)++"\n Saved on "++Date.getDate.format("%Y/%m/%d %H:%M:%S");
 				currentFile = path;
 				saveButton.enabled = true;
@@ -651,7 +650,7 @@ s.waitForBoot({
 				f.close;
 
 				postf("File was created in %.\n", currentFile);
-				thefile = currentFile.split(splitstr);
+				thefile = currentFile.split();
 				control.statusBar.string = " File: "++thefile.at(thefile.size - 1)++"\n Saved on "++Date.getDate.format("%Y/%m/%d %H:%M:%S");
 				issaved = true;
 			},{
@@ -719,8 +718,7 @@ s.waitForBoot({
 
 			}
 			});*/
-		})
-		.toolTip_("Attention! On exit file will be temporary saved in \n\""++File.getcwd++"/ChordScaleMatrix".standardizePath++"/main.csmx\".");
+		});
 
 		StaticText(w, control.width@10); // separator
 
