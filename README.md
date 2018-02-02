@@ -117,6 +117,11 @@ If you use the code for some project, please [let me know](mailto:thilo[at]exes.
 
 TO DO
 -----
+* Features
+    * MIDI timecode synchronisation
+    * Possibility to create random chords
+    * Possibility to create geometric, euclidean and sinus-wave matrix patterns
+
 * GUI
     * Correct positioning
 
