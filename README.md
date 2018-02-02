@@ -54,6 +54,10 @@ Alternative the [zipped Git repository](https://github.com/exesdotnet/ChordScale
 * Download the [modfm-synth](https://github.com/filib/modfm-synth/archive/master.zip) MIDI keyboard extension!
 * Please copy the extensions in the SuperCollider extension folder! You can examine by typing `Platform.userExtensionDir.postln;` in the IDE.
 * Download the [TabbedView2](https://github.com/jmuxfeldt/TabbedView2/archive/master.zip) and [TabbedView2_QT](https://github.com/jmuxfeldt/TabbedView2_QT/archive/master.zip) quarks!
+* Download the [cruciallib](https://github.com/crucialfelix/crucial-library/archive/master.zip) quarks!
+* Download the [ddwCommon](https://github.com/supercollider-quarks/ddwCommon/archive/master.zip) quarks!
+* Download the [ddwGUIEnhancements](https://github.com/supercollider-quarks/ddwGUIEnhancements/archive/master.zip) quarks!
+* Download the [ddwMIDI](https://github.com/supercollider-quarks/ddwMIDI/archive/master.zip) quarks!
 * Copy the quarks in the Quarks directory (You get the path by typing `Platform.userAppSupportDir;`.) or install the quarks via `ChordScaleMatrix/install_ChordScaleMatrix.scd`! See `Quarks.gui;`! You need to have also to install [SVN](https://subversion.apache.org/), especially for Windows.
 * Open the IDE!
 * In the menu `Language` click `Recompile Class Library`!
@@ -118,7 +122,8 @@ If you use the code for some project, please [let me know](mailto:thilo[at]exes.
 TO DO
 -----
 * Features
-    * MIDI timecode synchronisation
+    * MIDI time clock synchronisation
+    * Assign channel(s) to MIDI destinations and sources
     * Possibility to create random chords
     * Possibility to create geometric, euclidean and sinus-wave matrix patterns
 
@@ -143,6 +148,11 @@ TO DO
 
 List of Changes
 ---------------
+
+Version 0.93
+
+* New features:
+    * MIDI time clock synchronisation (not finished yet)
 
 Version 0.92
 
