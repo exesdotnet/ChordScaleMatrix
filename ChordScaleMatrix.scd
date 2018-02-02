@@ -1,7 +1,7 @@
 (
 /*
 https://github.com/exesdotnet/ChordScaleMatrix/
-ChordScaleMatrix 0.92 beta
+ChordScaleMatrix 0.93 beta
 */
 
 //Server.default = s = Server.internal;
@@ -19,8 +19,9 @@ s.waitForBoot({
 	var screen, layout, window, t, kbwin, decorator, button, matrix, buttonMatrix, leds, chordsel;
 	var synthName, scale, freqtune, octave, root, transp, sustain, amp;
 	var font, fontsize, txtalign;
-	var player, playButton, saveButton, control, controlView, sendType;
-	var midiDevice, midiChannel;
+	var player, playButton, saveButton, control, controlView;
+	var sendType, midiDevice, midiChannel, syncType, midiSyncDevice, midiSyncCh;
+	var offset, tempo, ttempo, htempo, myq;
 	var synthList;
 	var pointSize;
 	var chordplayer, keyb;
@@ -160,6 +161,15 @@ s.waitForBoot({
 	issaved = false;
 	gMode = false;
 	pan = -1.0.rand2;
+
+	// http://quark.sccode.org/ddwMIDI/Help/MIDISyncClock.html
+	// http://new-supercollider-mailing-lists-forums-use-these.2681727.n2.nabble.com/Sync-SC-tasks-to-an-external-MIDI-clock-td7404837.html
+	offset = -0.1;
+	tempo = 60;
+	ttempo = 60 / tempo; // beats in s
+	htempo = ttempo.reciprocal; // beats in Hz
+	offset = offset * ttempo;
+	myq = [4, offset];
 
 	// layout stuff
 	layout.width = numCols * pointSize;
@@ -345,14 +355,14 @@ s.waitForBoot({
 					//ipos.midiratio.postln();
 
 					if(sendType == 0) {
-						(instrument: synthName, scale: scale, amp: amp, sustain: sustain, octave: octave, root: root, ctranspose: transp, degree: degr).play;
+						(instrument: synthName, scale: scale, amp: amp, sustain: sustain, octave: octave, root: root, ctranspose: transp, degree: degr).play; //.play(MIDISyncClock, quant: myq);
 					};
 					if(sendType == 1) {
-						(type: \midi, midiout: midiDevice, scale: scale, amp: amp, sustain: sustain, octave: octave, root: root, ctranspose: transp, degree: degr).play;
+						(type: \midi, midiout: midiDevice, scale: scale, amp: amp, sustain: sustain, octave: octave, root: root, ctranspose: transp, degree: degr).play; //.play(MIDISyncClock, quant: myq);
 					};
 					if(sendType == 2) {
-						(instrument: synthName, scale: scale, amp: amp, sustain: sustain, octave: octave, root: root, ctranspose: transp, degree: degr).play;
-						(type: \midi, midiout: midiDevice, scale: scale, amp: amp, sustain: sustain, octave: octave, root: root, ctranspose: transp, degree: degr).play;
+						(instrument: synthName, scale: scale, amp: amp, sustain: sustain, octave: octave, root: root, ctranspose: transp, degree: degr).play; //.play(MIDISyncClock, quant: myq);
+						(type: \midi, midiout: midiDevice, scale: scale, amp: amp, sustain: sustain, octave: octave, root: root, ctranspose: transp, degree: degr).play; //.play(MIDISyncClock, quant: myq);
 					};
 				};
 			}; //postf("\n----\n", "");
@@ -374,6 +384,7 @@ s.waitForBoot({
 			0.25.wait; // quarter notes
 		}
 	});
+	SynthDescLib.global.read;
 
 	// control window
 	control = ();
@@ -569,7 +580,13 @@ s.waitForBoot({
 		.states_([["Play"], ["Pause", Color.black, Color.green]])
 		.action_({ |v|
 			if(v.value == 1){
-				player.play;
+				tempo = control.tempoSlide.value; // TODO: get the value from time clock host
+				ttempo = 60 / tempo; // beats in s
+				htempo = ttempo.reciprocal; // beats in Hz
+				offset = offset * ttempo;
+				myq = [4, offset];
+
+				player.play; //.play(MIDISyncClock, quant: myq);
 				//playButton.states_([["Play"], ["Pause", Color.black, Color.green]]);
 			}{
 				player.pause;
@@ -683,7 +700,10 @@ s.waitForBoot({
 			};
 
 			player.stop; player.reset;
+			//MIDIIn.disconnectAll;
+			//MIDIOut.disconnect(0, midiDevice);
 			window.close; control.window.close; kbwin.window.close;
+
 			//s.volume.gui.close;
 
 			/*// exit dialog
@@ -840,12 +860,62 @@ s.waitForBoot({
 		});
 
 		// midi channel
+		// TODO: Include midiChannel in code
 		midiChannel = 0;
 		StaticText(w, control.button.dim).string_("MIDI channel").align_(txtalign);
 		control.chooseChan = PopUpMenu(w, (control.width / 2)@control.button.dim.y)
 		.items_((0..15).collect{ |item| item.asString })
 		.action_({ |menu|
 			midiChannel = menu.value;
+		});
+
+		StaticText(w, control.width@10); // separator
+
+		// midi sync clock (slave)
+		syncType = 0;
+		StaticText(w, control.button.dim).string_("Sync to midi clock").align_(txtalign);
+		control.chooseSync = PopUpMenu(w, (control.width / 2)@control.button.dim.y)
+		.items_(["None", "MIDI"])
+		.action_({ |menu|
+			syncType = menu.value;
+			if(menu.value != 0){
+				MIDIClient.init;
+				control.chooseSyncDev.items_(
+					MIDIClient.sources.collect{ |aSyncDevice|
+						aSyncDevice.name.asString
+					}
+				);
+				midiSyncDevice = MIDIIn(0);
+			}{
+				control.chooseSyncDev.items_(["None"]);
+			};
+		});
+
+		// midi sync device host
+		midiSyncDevice = nil;
+		StaticText(w, control.button.dim).string_("MIDI device").align_(txtalign);
+		control.chooseSyncDev = PopUpMenu(w, (control.width / 2)@control.button.dim.y)
+		.items_(["No device"])
+		.action_({ |menu|
+			midiSyncDevice = MIDIIn(menu.value);
+
+			MIDIIn.connect(0, midiSyncDevice);
+			MIDISyncClock.init(0, 0); // 0 beats, 0 secs
+
+			postf("\tDEBUG: % -- %\n",
+				MIDIClient.sources[menu.value].device,
+				MIDIClient.sources[menu.value].name
+			);
+		});
+
+		// midi sync channel
+		// TODO: Include midiSyncCh in code
+		midiSyncCh = 0;
+		StaticText(w, control.button.dim).string_("MIDI channel").align_(txtalign);
+		control.chooseSyncCh = PopUpMenu(w, (control.width / 2)@control.button.dim.y)
+		.items_((0..15).collect{ |item| item.asString })
+		.action_({ |menu|
+			midiSyncCh = menu.value;
 		});
 	});
 
